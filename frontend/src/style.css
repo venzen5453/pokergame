@@ -1,0 +1,6070 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #0b3d2e;
+    color: white;
+}
+
+.auth-container,
+.mypage-container,
+.game-container {
+    width: 420px;
+    margin: 80px auto;
+    padding: 30px;
+    background: #145c43;
+    border-radius: 12px;
+    text-align: center;
+}
+
+input {
+    display: block;
+    width: 90%;
+    padding: 12px;
+    margin: 10px auto;
+    border: none;
+    border-radius: 6px;
+}
+
+button {
+    width: 95%;
+    padding: 12px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 6px;
+    background: gold;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background: orange;
+}
+
+.link-button {
+    background: transparent;
+    color: gold;
+    text-decoration: underline;
+}
+
+.message {
+    color: #ffdddd;
+}
+
+.profile-card,
+.user-box,
+.game-box {
+    background: #064d36;
+    padding: 20px;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.ranking-container {
+    width: 720px;
+    margin: 80px auto;
+    padding: 30px;
+    background: #145c43;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.ranking-buttons {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.ranking-buttons button {
+    flex: 1;
+}
+
+.ranking-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    background: #064d36;
+    border-radius: 10px;
+    overflow: visible;
+}
+
+.ranking-table th,
+.ranking-table td {
+    padding: 12px;
+    border-bottom: 1px solid #2b765d;
+}
+
+.ranking-table th {
+    background: #083b2b;
+    color: gold;
+}
+
+.ranking-table tr:hover {
+    background: #0d5a40;
+}
+
+.game-page {
+    width: 1100px;
+    margin: 40px auto;
+    color: white;
+}
+
+.game-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.game-header h1 {
+    font-size: 42px;
+    margin-bottom: 5px;
+    color: gold;
+}
+
+.game-header p {
+    margin: 0;
+    color: #d6f5e8;
+}
+
+.game-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+    align-items: start;
+}
+
+.game-main-panel,
+.game-side-panel {
+    background: #145c43;
+    border-radius: 18px;
+    padding: 24px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+}
+
+.table-top {
+    text-align: center;
+    background: linear-gradient(135deg, rgba(255, 215, 0, 0.12), transparent 40%),
+    rgba(0, 0, 0, 0.34) !important;
+    padding: 18px 20px !important;
+    border-radius: 20px !important;
+    margin-bottom: 22px !important;
+    position: relative !important;
+    z-index: 2 !important;
+    border: 1px solid rgba(255, 215, 0, 0.26) !important;
+    box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.28) !important;
+}
+
+.table-top h2 {
+    margin: 0 0 8px !important;
+    color: gold !important;
+    font-size: 26px !important;
+    letter-spacing: 1px !important;
+}
+
+.phase-text {
+    margin: 0 !important;
+    color: #d9fff1 !important;
+    font-size: 14px !important;
+    line-height: 1.55 !important;
+}
+
+.card-area {
+    min-height: 260px !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 18px !important;
+    padding: 42px 28px !important;
+    background: radial-gradient(circle at center, #16875f 0%, #0a5b42 42%, #032a21 100%) !important;
+    border-radius: 999px !important;
+    border: 3px solid rgba(255, 215, 0, 0.75) !important;
+    position: relative !important;
+    z-index: 2 !important;
+    box-shadow: inset 0 0 42px rgba(0, 0, 0, 0.42),
+    inset 0 0 0 10px rgba(255, 255, 255, 0.03),
+    0 16px 35px rgba(0, 0, 0, 0.38) !important;
+}
+
+.empty-card-message {
+    color: #d9fff1 !important;
+    font-size: 18px;
+    position: relative !important;
+    z-index: 2 !important;
+    padding: 18px 24px !important;
+    border-radius: 999px !important;
+    background: rgba(0, 0, 0, 0.28) !important;
+    font-weight: 800 !important;
+}
+
+.card {
+    --card-index: 0;
+    --exchange-order: 0;
+    --incoming-order: 0;
+    width: 100px;
+    height: 145px;
+    box-sizing: border-box;
+    background: #fffdf6;
+    color: #111;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 0;
+    font-weight: bold;
+    cursor: pointer;
+    border: 4px solid #f3f3f3;
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.35);
+    transition: transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease !important;
+    position: relative;
+    overflow: visible;
+    transform-style: preserve-3d;
+    z-index: 3 !important;
+}
+
+.card:hover {
+    transform: none;
+}
+
+.action-area {
+    margin-top: 24px !important;
+    text-align: center;
+    position: relative !important;
+    z-index: 2 !important;
+    padding: 18px !important;
+    border-radius: 20px !important;
+    background: rgba(0, 0, 0, 0.22) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.side-card {
+    background: #064d36;
+    padding: 18px;
+    border-radius: 14px;
+    margin-bottom: 18px;
+}
+
+.side-card h3 {
+    margin-top: 0;
+    color: gold;
+    border-bottom: 1px solid #2b765d;
+    padding-bottom: 8px;
+}
+
+.side-card p {
+    display: flex;
+    justify-content: space-between;
+    margin: 9px 0;
+}
+
+.side-card input {
+    width: 90%;
+    margin: 0 auto;
+}
+
+.payout-list p {
+    font-size: 14px;
+}
+
+.payout-list strong {
+    color: gold;
+}
+
+.mini-box {
+    background: radial-gradient(circle at top, rgba(168, 85, 247, 0.18), transparent 45%),
+    rgba(0, 0, 0, 0.3) !important;
+    padding: 22px !important;
+    border-radius: 22px !important;
+    margin-top: 22px !important;
+    position: relative !important;
+    z-index: 2 !important;
+    border: 1px solid rgba(168, 85, 247, 0.36) !important;
+    box-shadow: inset 0 0 24px rgba(0, 0, 0, 0.25) !important;
+}
+
+.button-row {
+    display: flex;
+    gap: 12px;
+}
+
+.button-row button {
+    flex: 1;
+}
+
+.held-card {
+    position: relative;
+    z-index: 5;
+    transform: translateY(-18px) scale(1.04) !important;
+    border-color: #ffd700 !important;
+    box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.7),
+    0 0 24px rgba(255, 215, 0, 0.6),
+    0 20px 34px rgba(0, 0, 0, 0.55) !important;
+    animation: holdPop 0.22s ease-out;
+}
+
+.held-card .card-face {
+    background: #fff4b8;
+    border-color: #ffd700;
+}
+
+.hold-badge {
+    position: absolute;
+    top: -13px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #ffd54a;
+    color: #2b2100;
+    border: 2px solid #fff2a8;
+    border-radius: 999px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    z-index: 20;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.35);
+    pointer-events: none;
+}
+
+.card-back-design {
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    background-color: #111111;
+    background-image: repeating-linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.18) 0px,
+            rgba(255, 255, 255, 0.18) 2px,
+            transparent 2px,
+            transparent 10px
+    ),
+    repeating-linear-gradient(
+            -45deg,
+            rgba(255, 255, 255, 0.18) 0px,
+            rgba(255, 255, 255, 0.18) 2px,
+            transparent 2px,
+            transparent 10px
+    );
+}
+
+.card-placeholder {
+    background: transparent;
+    box-shadow: none;
+    border: 4px solid transparent;
+    cursor: default;
+}
+
+.card-placeholder:hover {
+    transform: none;
+}
+
+.card-hidden {
+    background: #111111;
+    color: white;
+    border: 4px solid white;
+    padding: 6px;
+    box-sizing: border-box;
+    align-items: center;
+    justify-content: center;
+    transform-origin: center center;
+    animation: dealFromDealer 0.42s ease-out both;
+}
+
+.card-reveal {
+    border: 4px solid transparent;
+    box-sizing: border-box;
+    transform-origin: center center;
+    animation: flipOpen 0.35s ease-out both;
+}
+
+@keyframes dealFromDealer {
+    0% {
+        opacity: 0;
+        transform:
+                translate(180px, -120px)
+                rotate(calc(-10deg + var(--card-index, 0) * 3deg));
+    }
+
+    100% {
+        opacity: 1;
+        transform:
+                translate(0, 0)
+                rotate(0deg);
+    }
+}
+
+@keyframes flipOpen {
+    0% {
+        transform: rotateY(90deg);
+    }
+
+    100% {
+        transform: rotateY(0deg);
+    }
+}
+
+/* =========================
+   Real Playing Card Front
+========================= */
+
+.card-face {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 2px solid #dddddd;
+    border-radius: 10px;
+    background: #fffdf6;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.card-corner {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 0.85;
+    font-weight: 900;
+    z-index: 3;
+}
+
+.corner-top-left {
+    top: 7px;
+    left: 7px;
+}
+
+.corner-bottom-right {
+    right: 7px;
+    bottom: 7px;
+    transform: rotate(180deg);
+}
+
+.corner-rank {
+    font-size: 20px;
+    letter-spacing: -1px;
+}
+
+.corner-suit {
+    font-size: 15px;
+    margin-top: 3px;
+}
+
+/* 숫자 카드 문양 배치 */
+
+.card-pips {
+    position: absolute;
+    inset: 24px 16px 24px 16px;
+    z-index: 2;
+}
+
+.card-pip {
+    position: absolute;
+    font-size: 22px;
+    line-height: 1;
+    transform: translate(-50%, -50%);
+}
+
+/* 문양 위치 */
+
+.pip-top-left {
+    left: 28%;
+    top: 17%;
+}
+
+.pip-top-right {
+    left: 72%;
+    top: 17%;
+}
+
+.pip-top-center {
+    left: 50%;
+    top: 17%;
+}
+
+.pip-upper-center {
+    left: 50%;
+    top: 32%;
+}
+
+.pip-center {
+    left: 50%;
+    top: 50%;
+}
+
+.pip-lower-center {
+    left: 50%;
+    top: 68%;
+}
+
+.pip-middle-left {
+    left: 28%;
+    top: 50%;
+}
+
+.pip-middle-right {
+    left: 72%;
+    top: 50%;
+}
+
+.pip-bottom-left {
+    left: 28%;
+    top: 83%;
+    transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.pip-bottom-right {
+    left: 72%;
+    top: 83%;
+    transform: translate(-50%, -50%) rotate(180deg);
+}
+
+.pip-bottom-center {
+    left: 50%;
+    top: 83%;
+    transform: translate(-50%, -50%) rotate(180deg);
+}
+
+/* A 카드 */
+
+.ace-center {
+    position: absolute;
+    inset: 26px 14px 26px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+
+.ace-suit {
+    font-size: 60px;
+    line-height: 1;
+    filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.12));
+}
+
+/* 카드 색 */
+
+.red-card {
+    color: #d10000;
+}
+
+.black-card {
+    color: #111111;
+}
+
+/* 조커 카드 */
+
+.joker-card {
+    background: #222222;
+    color: white;
+    border-color: #c084fc !important;
+    box-shadow: 0 0 0 4px rgba(192, 132, 252, 0.45),
+    0 0 24px rgba(192, 132, 252, 0.55),
+    0 18px 34px rgba(0, 0, 0, 0.5) !important;
+}
+
+.joker-face {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    border: 2px solid rgba(216, 180, 254, 0.75) !important;
+    border-radius: 8px;
+    background: radial-gradient(circle at top, rgba(255, 215, 0, 0.22), transparent 35%),
+    radial-gradient(circle at center, #4c1d95, #171717 72%) !important;
+    box-sizing: border-box;
+    color: white;
+}
+
+.joker-top {
+    position: absolute;
+    top: 8px;
+    left: 6px;
+    font-size: 12px;
+    font-weight: 900;
+    writing-mode: vertical-rl;
+    letter-spacing: 1px;
+}
+
+.joker-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 44px;
+    filter: drop-shadow(0 3px 4px rgba(0, 0, 0, 0.5));
+    color: gold !important;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.65),
+    0 0 18px rgba(192, 132, 252, 0.8);
+}
+
+.joker-bottom {
+    position: absolute;
+    right: 6px;
+    bottom: 8px;
+    font-size: 12px;
+    font-weight: 900;
+    writing-mode: vertical-rl;
+    letter-spacing: 1px;
+    transform: rotate(180deg);
+}
+
+/* =========================
+   Illustrated Face Cards
+========================= */
+
+.face-card-center {
+    position: absolute;
+    inset: 10px 10px 20px 10px;
+    z-index: 2;
+}
+
+.face-card-banner {
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    font-weight: 800;
+    letter-spacing: 1.4px;
+    line-height: 1;
+    opacity: 0.65;
+    white-space: nowrap;
+}
+
+.face-svg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 78px;
+    height: 78px;
+    transform: translate(-50%, -44%);
+    display: block;
+}
+
+.face-j .face-svg,
+.face-q .face-svg,
+.face-k .face-svg {
+    filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.06));
+}
+
+@keyframes holdPop {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    65% {
+        transform: translateY(-18px) scale(1.06);
+    }
+
+    100% {
+        transform: translateY(-14px) scale(1.03);
+    }
+}
+
+/* =========================
+   Exchange Animation
+========================= */
+
+.card-exchange-out {
+    z-index: 30;
+    pointer-events: none;
+    animation: exchangeOut 0.58s ease-in both;
+    animation-delay: calc(var(--exchange-order, 0) * 0.12s);
+}
+
+.card-incoming {
+    z-index: 25;
+    pointer-events: none;
+    animation: exchangeInBack 0.5s ease-out both;
+    animation-delay: calc(var(--incoming-order, 0) * 0.16s);
+}
+
+@keyframes exchangeOut {
+    0% {
+        opacity: 1;
+        transform: translateY(0) scale(1) rotateY(0deg);
+    }
+
+    45% {
+        opacity: 1;
+        transform: translateY(-18px) scale(1.06) rotateY(90deg);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-80px) scale(0.92) rotateY(180deg);
+    }
+}
+
+@keyframes exchangeInBack {
+    0% {
+        opacity: 0;
+        transform: translate(90px, -70px) scale(0.95) rotate(-8deg);
+    }
+
+    70% {
+        opacity: 1;
+        transform: translate(-4px, 4px) scale(1.03) rotate(1deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1) rotate(0deg);
+    }
+}
+
+/* =========================
+   Winning Cards Highlight
+========================= */
+
+.winning-card {
+    border-color: #6aff8f !important;
+    box-shadow: 0 0 0 4px rgba(106, 255, 143, 0.75),
+    0 0 22px rgba(106, 255, 143, 0.85),
+    0 18px 30px rgba(0, 0, 0, 0.45);
+    transform: translateY(-20px) scale(1.06) !important;
+    z-index: 10;
+    animation: winningPulse 1.1s ease-in-out infinite;
+}
+
+@keyframes winningPulse {
+    0% {
+        box-shadow:
+                0 0 0 3px rgba(106, 255, 143, 0.55),
+                0 0 14px rgba(106, 255, 143, 0.6),
+                0 18px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    50% {
+        box-shadow:
+                0 0 0 5px rgba(106, 255, 143, 0.9),
+                0 0 28px rgba(106, 255, 143, 1),
+                0 22px 36px rgba(0, 0, 0, 0.5);
+    }
+
+    100% {
+        box-shadow:
+                0 0 0 3px rgba(106, 255, 143, 0.55),
+                0 0 14px rgba(106, 255, 143, 0.6),
+                0 18px 30px rgba(0, 0, 0, 0.45);
+    }
+}
+
+/* =========================
+   Mini Game Card Reveal
+========================= */
+
+.mini-card-area {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 28px;
+    margin: 18px 0;
+}
+
+.mini-card-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.mini-card-label {
+    margin: 0;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 1.5px;
+    opacity: 0.75;
+}
+
+.mini-card {
+    cursor: default;
+}
+
+.mini-left-open {
+    animation: miniLeftFlipOpen 0.7s ease-out both;
+}
+
+@keyframes miniLeftFlipOpen {
+    0% {
+        transform: rotateY(180deg) scale(1);
+    }
+
+    45% {
+        transform: rotateY(90deg) scale(1.06);
+    }
+
+    100% {
+        transform: rotateY(0deg) scale(1);
+    }
+}
+
+.mini-choice-button {
+    width: 150px;
+    height: 56px;
+    border-radius: 14px;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    cursor: pointer;
+    transition: transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.higher-button {
+    background: linear-gradient(135deg, #0f3d2e, #176348);
+    color: #f6e7b1;
+    border: 1px solid rgba(246, 231, 177, 0.75);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16),
+    inset 0 -10px 18px rgba(0, 0, 0, 0.16);
+}
+
+.lower-button {
+    background: linear-gradient(135deg, #1f1f24, #3a3430);
+    color: #f6e7b1;
+    border: 1px solid rgba(246, 231, 177, 0.75);
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    inset 0 -10px 18px rgba(0, 0, 0, 0.18);
+}
+
+.mini-choice-button:hover {
+    transform: translateY(-4px) scale(1.03);
+    border-color: #ffe7a3;
+    color: #fff2c7;
+    box-shadow: 0 16px 28px rgba(0, 0, 0, 0.52),
+    0 0 18px rgba(246, 231, 177, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.mini-choice-button:active {
+    transform: translateY(-1px) scale(0.98);
+}
+
+.mini-choice-button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.mypage-container {
+    width: min(1100px, 94vw);
+    margin: 40px auto;
+    color: #f5f5f5;
+}
+
+.mypage-container h1 {
+    text-align: center;
+    margin-bottom: 24px;
+    font-size: 34px;
+}
+
+.mypage-card {
+    background: rgba(20, 24, 32, 0.92);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+}
+
+.mypage-card h2 {
+    margin-bottom: 14px;
+    color: #ffd76a;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+}
+
+.stat-card {
+    background: linear-gradient(145deg, rgba(35, 40, 54, 0.95), rgba(16, 18, 25, 0.95));
+    border: 1px solid rgba(255, 215, 106, 0.22);
+    border-radius: 18px;
+    padding: 20px;
+    text-align: center;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.32);
+}
+
+.stat-card span {
+    display: block;
+    margin-bottom: 8px;
+    color: #bbbbbb;
+    font-size: 14px;
+}
+
+.stat-card strong {
+    font-size: 26px;
+    color: #ffd76a;
+}
+
+.log-section {
+    background: rgba(20, 24, 32, 0.92);
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    overflow-x: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.log-section h2 {
+    margin-bottom: 18px;
+}
+
+.log-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 850px;
+}
+
+.log-table th,
+.log-table td {
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.log-table th {
+    color: #ffd76a;
+    font-weight: 800;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.log-table td {
+    color: #eeeeee;
+}
+
+.empty-log {
+    color: #bbbbbb;
+    text-align: center;
+    padding: 20px;
+    min-height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 760px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .mypage-container h1 {
+        font-size: 28px;
+    }
+}
+
+.result-box {
+    margin-top: 18px;
+    padding: 22px;
+    border-radius: 18px;
+    background: linear-gradient(145deg, #073f2f, #0b5a42);
+    border: 2px solid rgba(255, 215, 0, 0.55);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+    text-align: center;
+}
+
+.result-title {
+    margin: 0 0 12px;
+    color: gold;
+    font-size: 24px;
+}
+
+.result-text {
+    margin: 0 0 18px;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.6;
+}
+
+/* =========================
+   Result Animation
+========================= */
+
+.result-card {
+    animation: resultPop 0.45s ease-out both;
+}
+
+@keyframes resultPop {
+    0% {
+        opacity: 0;
+        transform: translateY(18px) scale(0.94);
+    }
+
+    70% {
+        opacity: 1;
+        transform: translateY(-4px) scale(1.02);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.result-win {
+    border-color: rgba(255, 215, 106, 0.55);
+    box-shadow: 0 22px 52px rgba(0, 0, 0, 0.48),
+    0 0 24px rgba(255, 215, 106, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.result-lose {
+    border-color: rgba(255, 90, 90, 0.45);
+    animation: resultPop 0.45s ease-out both,
+    resultShake 0.35s ease-in-out 0.45s;
+}
+
+@keyframes resultShake {
+    0% {
+        transform: translateX(0);
+    }
+
+    25% {
+        transform: translateX(-5px);
+    }
+
+    50% {
+        transform: translateX(5px);
+    }
+
+    75% {
+        transform: translateX(-3px);
+    }
+
+    100% {
+        transform: translateX(0);
+    }
+}
+
+.result-jackpot {
+    border-color: #ffd76a;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55),
+    0 0 32px rgba(255, 215, 106, 0.45),
+    0 0 70px rgba(255, 215, 106, 0.18);
+    position: relative;
+    overflow: hidden;
+}
+
+.result-jackpot::before {
+    content: "JACKPOT";
+    position: absolute;
+    top: 18px;
+    right: -38px;
+    transform: rotate(35deg);
+    padding: 8px 44px;
+    background: linear-gradient(135deg, #ffd76a, #b98518);
+    color: #211400;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.35);
+}
+
+.side-action-button {
+    width: 100%;
+    margin-top: 12px;
+    padding: 16px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 10px;
+    font-size: 20px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+.side-action-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+}
+
+.side-action-mypage {
+    background: linear-gradient(135deg, #f3f3f3, #dcdcdc);
+    color: #111111;
+}
+
+.side-action-mypage:hover {
+    background: linear-gradient(135deg, #ffffff, #e8e8e8);
+}
+
+.side-action-logout {
+    background: linear-gradient(135deg, #5a1f1f, #8f2f2f);
+    color: #ffffff;
+}
+
+.side-action-logout:hover {
+    background: linear-gradient(135deg, #6d2626, #a83838);
+}
+
+/* =========================
+   Mobile Optimization
+========================= */
+
+@media (max-width: 768px) {
+    html,
+    body {
+        width: 100%;
+        overflow-x: hidden;
+    }
+
+    body {
+        font-size: 16px;
+    }
+
+    button {
+        min-height: 54px;
+        font-size: 17px;
+        border-radius: 14px;
+        touch-action: manipulation;
+    }
+
+    input {
+        font-size: 16px;
+    }
+
+    /* =========================
+       Login / Register
+    ========================= */
+
+    .auth-container {
+        width: 92vw;
+        margin: 36px auto;
+        padding: 28px 20px;
+        border-radius: 22px;
+        box-sizing: border-box;
+    }
+
+    .auth-container h1 {
+        font-size: 34px;
+        margin-bottom: 12px;
+    }
+
+    .auth-container h2 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+
+    .auth-container input {
+        width: 100%;
+        height: 56px;
+        padding: 0 16px;
+        margin: 12px auto;
+        font-size: 18px;
+        border-radius: 14px;
+        box-sizing: border-box;
+    }
+
+    .auth-container button {
+        width: 100%;
+        min-height: 56px;
+        margin-top: 14px;
+        font-size: 18px;
+        border-radius: 14px;
+    }
+
+    .auth-container .link-button {
+        min-height: 48px;
+        font-size: 16px;
+    }
+
+    .message {
+        font-size: 16px;
+        line-height: 1.5;
+        padding: 0 8px;
+    }
+
+    /* =========================
+       Game Layout
+    ========================= */
+
+    .game-page {
+        width: 100%;
+        margin: 0 auto;
+        padding: 14px;
+        box-sizing: border-box;
+    }
+
+    .game-header {
+        margin-bottom: 18px;
+        text-align: center;
+    }
+
+    .game-header h1 {
+        font-size: 32px;
+        margin-bottom: 8px;
+    }
+
+    .game-header p {
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    .game-layout {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .game-main-panel,
+    .game-side-panel {
+        width: 100%;
+        padding: 16px;
+        border-radius: 20px;
+        box-sizing: border-box;
+    }
+
+    .game-main-panel {
+        order: 1;
+        padding: 16px !important;
+        border-radius: 22px !important;
+    }
+
+    .game-side-panel {
+        order: 2;
+    }
+
+    .table-top {
+        padding: 16px 12px;
+        margin-bottom: 18px;
+        border-radius: 16px;
+        text-align: center;
+    }
+
+    .table-top h2 {
+        font-size: 22px !important;
+        margin-bottom: 8px;
+    }
+
+    .phase-text {
+        font-size: 13px !important;
+        line-height: 1.5;
+    }
+
+    /* =========================
+       Cards
+    ========================= */
+
+    .card-area {
+        width: 100%;
+        min-height: 155px !important;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 6px !important;
+        padding: 28px 8px 34px !important;
+        overflow: visible;
+        flex-wrap: nowrap !important;
+        box-sizing: border-box;
+        border-radius: 28px !important;
+    }
+
+    .card {
+        width: calc((100vw - 96px) / 5);
+        min-width: 0;
+        max-width: 72px;
+        aspect-ratio: 68 / 100;
+        height: auto;
+        padding: 0;
+        border-width: 3px;
+        border-radius: 10px;
+        flex-shrink: 1;
+    }
+
+    .card-face {
+        width: 100%;
+        height: 100%;
+        border-radius: 8px;
+    }
+
+    .card-corner {
+        font-size: 12px;
+    }
+
+    .corner-top-left {
+        top: 5px;
+        left: 5px;
+    }
+
+    .corner-bottom-right {
+        right: 5px;
+        bottom: 5px;
+    }
+
+    .corner-rank {
+        font-size: 13px;
+    }
+
+    .corner-suit {
+        font-size: 12px;
+        margin-top: 1px;
+    }
+
+    .card-pips {
+        inset: 19px 8px 19px 8px;
+    }
+
+    .card-pip {
+        font-size: 14px;
+    }
+
+    .ace-suit {
+        font-size: 34px;
+    }
+
+    .face-svg {
+        width: 50px;
+        height: 50px;
+        transform: translate(-50%, -42%);
+    }
+
+    .face-card-banner {
+        top: 9px;
+        font-size: 6px;
+        letter-spacing: 1px;
+    }
+
+    .joker-top,
+    .joker-bottom {
+        font-size: 10px;
+    }
+
+    .joker-center {
+        font-size: 26px;
+    }
+
+    .hold-badge {
+        top: -12px;
+        padding: 3px 8px;
+        font-size: 10px;
+    }
+
+    .held-card {
+        transform: translateY(-10px) scale(1.02);
+    }
+
+    .winning-card {
+        transform: translateY(-10px) scale(1.02);
+    }
+
+    /* =========================
+       Main Buttons
+    ========================= */
+
+    .action-area {
+        width: 100%;
+        margin-top: 18px;
+        padding: 14px !important;
+        box-sizing: border-box;
+    }
+
+    .action-area button {
+        width: 100%;
+        min-height: 58px;
+        font-size: 18px;
+        border-radius: 16px;
+        padding: 12px 16px;
+    }
+
+    .button-row {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .button-row button {
+        width: 100%;
+        min-height: 56px;
+        font-size: 17px;
+        border-radius: 15px;
+    }
+
+    /* =========================
+       Side Panel
+    ========================= */
+
+    .side-card {
+        padding: 18px;
+        margin-bottom: 14px;
+        border-radius: 18px;
+        box-sizing: border-box;
+    }
+
+    .side-card h3 {
+        font-size: 21px;
+        margin-bottom: 12px;
+    }
+
+    .side-card p {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    .side-card input {
+        width: 100%;
+        height: 56px;
+        margin: 0 auto;
+        font-size: 20px;
+        text-align: center;
+        border-radius: 14px;
+        box-sizing: border-box;
+    }
+
+    .payout-list p {
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    .side-action-button {
+        width: 100%;
+        min-height: 58px;
+        padding: 14px 16px;
+        font-size: 18px;
+        border-radius: 15px;
+        box-sizing: border-box;
+    }
+
+    /* =========================
+       Mini Game
+    ========================= */
+
+    .mini-box {
+        width: 100%;
+        margin-top: 18px;
+        padding: 18px 12px;
+        border-radius: 18px;
+        box-sizing: border-box;
+    }
+
+    .mini-box h2 {
+        font-size: 22px;
+        line-height: 1.4;
+    }
+
+    .mini-box h3 {
+        font-size: 20px;
+    }
+
+    .mini-box p {
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    .mini-card-area {
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        gap: 14px;
+        margin: 18px 0;
+    }
+
+    .mini-card-wrap {
+        gap: 7px;
+    }
+
+    .mini-card-label {
+        font-size: 12px;
+    }
+
+    .mini-card-area .card {
+        width: 82px;
+        min-width: 82px;
+        height: 120px;
+    }
+
+    .mini-choice-button {
+        width: 100%;
+        min-height: 66px;
+        font-size: 20px;
+        border-radius: 18px;
+        letter-spacing: 1px;
+    }
+
+    /* =========================
+       Result
+    ========================= */
+
+    .result-box {
+        width: 100%;
+        margin-top: 18px;
+        padding: 18px 12px;
+        border-radius: 18px;
+        box-sizing: border-box;
+    }
+
+    .result-title {
+        font-size: 24px;
+    }
+
+    .result-text {
+        font-size: 16px;
+        line-height: 1.6;
+    }
+
+    .result-card {
+        width: 100%;
+        padding: 18px 14px;
+        box-sizing: border-box;
+    }
+
+    .result-card-header strong {
+        font-size: 26px;
+    }
+
+    .result-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 10px !important;
+    }
+
+    .result-item {
+        padding: 12px 10px !important;
+    }
+
+    .result-item strong {
+        font-size: 16px !important;
+    }
+
+    /* =========================
+       MyPage
+    ========================= */
+
+    .mypage-container {
+        width: 94vw;
+        margin: 24px auto;
+        padding: 22px 16px;
+        box-sizing: border-box;
+    }
+
+    .mypage-container h1 {
+        font-size: 30px;
+        margin-bottom: 20px;
+    }
+
+    .mypage-card {
+        padding: 18px;
+        border-radius: 18px;
+    }
+
+    .mypage-card h2 {
+        font-size: 22px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+
+    .stat-card {
+        padding: 16px 10px;
+        border-radius: 16px;
+    }
+
+    .stat-card span {
+        font-size: 13px;
+    }
+
+    .stat-card strong {
+        font-size: 22px;
+    }
+
+    .log-section {
+        padding: 16px;
+        border-radius: 18px;
+        overflow-x: auto;
+    }
+
+    .log-table {
+        min-width: 820px;
+        font-size: 14px;
+    }
+
+    .log-table th,
+    .log-table td {
+        padding: 10px 8px;
+    }
+
+    /* =========================
+       Ranking
+    ========================= */
+
+    .ranking-container {
+        width: 94vw;
+        margin: 24px auto;
+        padding: 18px;
+        border-radius: 18px;
+        box-sizing: border-box;
+        overflow-x: auto;
+    }
+
+    .ranking-container h1 {
+        font-size: 30px;
+    }
+
+    .ranking-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .ranking-buttons button {
+        width: 100%;
+        min-height: 54px;
+        font-size: 17px;
+    }
+
+    .ranking-table {
+        min-width: 620px;
+        font-size: 14px;
+    }
+
+    .ranking-table th,
+    .ranking-table td {
+        padding: 10px 8px;
+    }
+}
+
+/* =========================
+   Small Mobile Optimization
+========================= */
+
+@media (max-width: 430px) {
+    .auth-container {
+        width: 94vw;
+        margin: 28px auto;
+        padding: 24px 16px;
+    }
+
+    .auth-container h1 {
+        font-size: 30px;
+    }
+
+    .auth-container h2 {
+        font-size: 22px;
+    }
+
+    .game-page {
+        padding: 10px;
+    }
+
+    .game-header h1 {
+        font-size: 28px;
+    }
+
+    .game-header p {
+        font-size: 14px;
+    }
+
+    .game-main-panel,
+    .game-side-panel {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .table-top h2 {
+        font-size: 22px;
+    }
+
+    .card-area {
+        gap: 8px;
+        padding: 20px 8px 24px;
+    }
+
+    .card {
+        width: calc((100vw - 76px) / 5);
+        min-width: 0;
+        max-width: 68px;
+        aspect-ratio: 68 / 100;
+        height: auto;
+        border-width: 3px;
+    }
+
+    .corner-rank {
+        font-size: 13px;
+    }
+
+    .corner-suit {
+        font-size: 12px;
+    }
+
+    .card-pips {
+        inset: 20px 10px 20px 10px;
+    }
+
+    .card-pip {
+        font-size: 15px;
+    }
+
+    .ace-suit {
+        font-size: 36px;
+    }
+
+    .joker-center {
+        font-size: 28px;
+    }
+
+    .face-svg {
+        width: 54px;
+        height: 54px;
+    }
+
+    .face-card-banner {
+        font-size: 6px;
+    }
+
+    .mini-card-area {
+        gap: 10px;
+    }
+
+    .mini-card-area .card {
+        width: 74px;
+        min-width: 74px;
+        height: 108px;
+    }
+
+    .mini-choice-button {
+        min-height: 62px;
+        font-size: 18px;
+    }
+
+    .side-card p {
+        font-size: 15px;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card strong {
+        font-size: 24px;
+    }
+}
+
+/* =========================
+   Mini Game Button Rows - Optimized
+========================= */
+
+.mini-button-row,
+.mini-choice-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    flex-wrap: nowrap;
+}
+
+.mini-button-row button,
+.mini-choice-row button {
+    width: auto;
+    flex: 1 1 0;
+    max-width: 180px;
+    min-width: 0;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .mini-button-row,
+    .mini-choice-row {
+        flex-direction: row;
+        gap: 10px;
+    }
+
+    .mini-button-row button,
+    .mini-choice-row button {
+        width: auto;
+        flex: 1 1 0;
+        max-width: none;
+        min-width: 0;
+        min-height: 52px;
+        padding: 12px 6px;
+        font-size: 14px;
+        white-space: nowrap;
+    }
+}
+
+/* =========================
+   Mission Modal - Optimized
+========================= */
+
+.mission-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.68);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.mission-modal {
+    position: relative;
+    z-index: 10000;
+    width: min(720px, 96vw);
+    height: min(88vh, 760px);
+    max-height: 88vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(145deg, #064d36, #0b3d2e);
+    border: 2px solid rgba(255, 215, 0, 0.45);
+    border-radius: 22px;
+    padding: 22px;
+    color: white;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
+    box-sizing: border-box;
+}
+
+.mission-modal-header {
+    flex: 0 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.mission-modal-header h2 {
+    margin: 0;
+    color: gold;
+    font-size: 30px;
+}
+
+.mission-close-button {
+    width: auto;
+    min-width: 54px;
+    min-height: 42px;
+    margin: 0;
+    padding: 9px 14px;
+    border-radius: 12px;
+    background: #8f2f2f;
+    color: white;
+    font-size: 16px;
+}
+
+.mission-close-button:hover {
+    background: #a83838;
+}
+
+.mission-tabs {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+    position: relative;
+    z-index: 10001;
+}
+
+.mission-tabs button {
+    width: auto;
+    flex: 1;
+    min-height: 46px;
+    margin: 0;
+    padding: 12px 8px;
+    border-radius: 12px;
+    background: #123f31;
+    color: #f6e7b1;
+    border: 1px solid rgba(255, 215, 0, 0.35);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.mission-tabs button.active {
+    background: gold;
+    color: #111;
+    font-weight: 900;
+}
+
+.mission-message {
+    flex: 0 0 auto;
+    margin: 0 0 12px;
+    padding: 12px;
+    border-radius: 12px;
+    background: rgba(255, 215, 0, 0.15);
+    color: #fff2c7;
+    text-align: center;
+    font-weight: 700;
+}
+
+.mission-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding-right: 6px;
+}
+
+.mission-content h3 {
+    color: gold;
+    margin: 0 0 14px;
+}
+
+.mission-item {
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 12px;
+}
+
+.mission-completed {
+    border-color: rgba(255, 215, 0, 0.65);
+    box-shadow: 0 0 14px rgba(255, 215, 0, 0.18);
+}
+
+.mission-item-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.mission-item-top strong {
+    color: white;
+}
+
+.mission-item-top span {
+    color: gold;
+    font-weight: 900;
+}
+
+.mission-progress {
+    width: 100%;
+    height: 12px;
+    background: #08291f;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+.mission-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, gold, orange);
+    border-radius: 999px;
+}
+
+.mission-status {
+    margin: 0;
+    font-size: 14px;
+    color: #d6f5e8;
+}
+
+.mission-reward-box {
+    margin-top: 18px;
+    padding: 18px;
+    background: rgba(255, 215, 0, 0.12);
+    border: 1px solid rgba(255, 215, 0, 0.42);
+    border-radius: 16px;
+    text-align: center;
+}
+
+.mission-reward-box strong {
+    color: gold;
+}
+
+.mission-reward-box button {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.achievement-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.achievement-bottom p {
+    margin: 0;
+    color: gold;
+    font-weight: 800;
+}
+
+.achievement-bottom button {
+    width: auto;
+    min-width: 120px;
+    margin: 0;
+}
+
+.mission-modal button:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.mission-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.mission-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 999px;
+}
+
+.mission-content::-webkit-scrollbar-thumb {
+    background: gold;
+    border-radius: 999px;
+}
+
+@media (max-width: 768px) {
+    .mission-modal-backdrop {
+        padding: 10px;
+    }
+
+    .mission-modal {
+        width: 96vw;
+        height: 86vh;
+        max-height: 86vh;
+        padding: 18px;
+        border-radius: 20px;
+    }
+
+    .mission-modal-header h2 {
+        font-size: 26px;
+    }
+
+    .mission-close-button {
+        min-width: 48px;
+        min-height: 40px;
+        padding: 8px 10px;
+        font-size: 14px;
+    }
+
+    .mission-tabs {
+        gap: 8px;
+    }
+
+    .mission-tabs button {
+        min-height: 46px;
+        font-size: 14px;
+        padding: 10px 6px;
+    }
+
+    .mission-content {
+        padding-right: 4px;
+    }
+
+    .mission-item-top {
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .achievement-bottom {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .achievement-bottom button {
+        width: 100%;
+    }
+}
+
+/* =========================
+   Joker Special Round Design
+========================= */
+
+.joker-round-banner {
+    width: min(1180px, 95%);
+    margin: 0 auto 18px;
+    padding: 16px 20px;
+    border-radius: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    color: white;
+    box-sizing: border-box;
+    border: 2px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+    animation: jokerBannerPulse 1.8s ease-in-out infinite;
+}
+
+.joker-round-banner.boost {
+    background: linear-gradient(135deg, #44206f, #6d28d9, #a855f7);
+    border-color: rgba(255, 215, 0, 0.35);
+}
+
+.joker-round-banner.guaranteed {
+    background: linear-gradient(135deg, #7a1111, #d62828, #f59e0b);
+    border-color: rgba(255, 230, 120, 0.55);
+}
+
+.joker-round-icon {
+    font-size: 38px;
+    flex: 0 0 auto;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.25));
+}
+
+.joker-round-text {
+    flex: 1;
+}
+
+.joker-round-text strong {
+    display: block;
+    font-size: 22px;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+}
+
+.joker-round-text p {
+    margin: 0;
+    font-size: 14px;
+    opacity: 0.96;
+}
+
+.joker-round-rate {
+    min-width: 74px;
+    height: 74px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.14);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 900;
+    border: 2px solid rgba(255, 255, 255, 0.25);
+    box-shadow: inset 0 0 14px rgba(255, 255, 255, 0.08);
+}
+
+@keyframes jokerBannerPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+    }
+    50% {
+        transform: scale(1.01);
+        box-shadow: 0 14px 32px rgba(255, 215, 0, 0.22);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28);
+    }
+}
+
+.start-game-button.start-game-boost {
+    background: linear-gradient(135deg, #7c3aed, #a855f7) !important;
+    color: white;
+    box-shadow: 0 0 18px rgba(168, 85, 247, 0.45);
+    border: 2px solid rgba(255, 215, 0, 0.28);
+}
+
+.start-game-button.start-game-guaranteed {
+    background: linear-gradient(135deg, #dc2626, #f59e0b) !important;
+    color: white;
+    box-shadow: 0 0 18px rgba(245, 158, 11, 0.45);
+    border: 2px solid rgba(255, 230, 120, 0.4);
+}
+
+.joker-rate-highlight {
+    font-weight: 700;
+    padding: 8px 10px;
+    border-radius: 12px;
+    margin-top: 6px;
+}
+
+.joker-rate-highlight.boost {
+    background: rgba(168, 85, 247, 0.14);
+    border: 1px solid rgba(168, 85, 247, 0.28);
+    color: #f0d8ff;
+}
+
+.joker-rate-highlight.guaranteed {
+    background: rgba(245, 158, 11, 0.14);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: #ffe9a8;
+}
+
+.joker-round-side-badge {
+    margin-top: 8px;
+    padding: 8px 10px;
+    border-radius: 12px;
+    font-weight: 800;
+    text-align: center;
+}
+
+.joker-round-side-badge.boost {
+    background: linear-gradient(135deg, rgba(124, 58, 237, 0.18), rgba(168, 85, 247, 0.18));
+    border: 1px solid rgba(168, 85, 247, 0.28);
+    color: #f2ddff;
+}
+
+.joker-round-side-badge.guaranteed {
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.18), rgba(245, 158, 11, 0.18));
+    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: #fff0b8;
+}
+
+.joker-boost-mode .table-top {
+    box-shadow: 0 0 22px rgba(168, 85, 247, 0.12);
+}
+
+.joker-guaranteed-mode .table-top {
+    box-shadow: 0 0 26px rgba(245, 158, 11, 0.18);
+}
+
+@media (max-width: 768px) {
+    .joker-round-banner {
+        padding: 14px;
+        gap: 12px;
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+    }
+
+    .joker-round-icon {
+        font-size: 32px;
+    }
+
+    .joker-round-text strong {
+        font-size: 18px;
+    }
+
+    .joker-round-text p {
+        font-size: 13px;
+    }
+
+    .joker-round-rate {
+        width: 68px;
+        height: 68px;
+        min-width: 68px;
+        margin: 0 auto;
+        font-size: 22px;
+    }
+}
+
+.start-game-button {
+    width: 100%;
+}
+
+/* =========================
+   Joker Start Overlay
+========================= */
+
+.joker-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 12000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.72);
+    pointer-events: none;
+    animation: jokerOverlayFade 1.8s ease forwards;
+}
+
+.joker-overlay-card {
+    width: min(520px, 92vw);
+    padding: 34px 24px;
+    border-radius: 28px;
+    text-align: center;
+    color: white;
+    box-sizing: border-box;
+    transform: scale(0.7);
+    animation: jokerOverlayPop 1.8s ease forwards;
+    border: 3px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 0 50px rgba(255, 215, 0, 0.35);
+}
+
+.joker-overlay.boost .joker-overlay-card {
+    background: radial-gradient(circle at top, #a855f7, #4c1d95 70%);
+    border-color: rgba(255, 215, 0, 0.5);
+}
+
+.joker-overlay.guaranteed .joker-overlay-card {
+    background: radial-gradient(circle at top, #f59e0b, #991b1b 72%);
+    border-color: rgba(255, 240, 150, 0.75);
+    box-shadow: 0 0 70px rgba(245, 158, 11, 0.55);
+}
+
+.joker-overlay-icon {
+    font-size: 82px;
+    line-height: 1;
+    margin-bottom: 10px;
+    animation: jokerIconSpin 1.8s ease forwards;
+    filter: drop-shadow(0 0 14px rgba(255, 255, 255, 0.45));
+}
+
+.joker-overlay-card h1 {
+    margin: 0 0 10px;
+    font-size: 42px;
+    letter-spacing: 2px;
+    color: gold;
+    text-shadow: 0 0 14px rgba(255, 215, 0, 0.55);
+}
+
+.joker-overlay-card p {
+    margin: 0 0 18px;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.joker-overlay-rate {
+    width: 108px;
+    height: 108px;
+    margin: 0 auto;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.16);
+    border: 3px solid rgba(255, 255, 255, 0.35);
+    font-size: 34px;
+    font-weight: 900;
+    color: white;
+    box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.12);
+}
+
+@keyframes jokerOverlayFade {
+    0% {
+        opacity: 0;
+    }
+
+    12% {
+        opacity: 1;
+    }
+
+    78% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes jokerOverlayPop {
+    0% {
+        transform: scale(0.65) rotate(-5deg);
+        opacity: 0;
+    }
+
+    18% {
+        transform: scale(1.08) rotate(2deg);
+        opacity: 1;
+    }
+
+    32% {
+        transform: scale(1) rotate(0deg);
+    }
+
+    78% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.92);
+        opacity: 0;
+    }
+}
+
+@keyframes jokerIconSpin {
+    0% {
+        transform: rotate(-18deg) scale(0.7);
+    }
+
+    30% {
+        transform: rotate(10deg) scale(1.15);
+    }
+
+    55% {
+        transform: rotate(-6deg) scale(1);
+    }
+
+    100% {
+        transform: rotate(0deg) scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .joker-overlay-card {
+        padding: 28px 18px;
+        border-radius: 24px;
+    }
+
+    .joker-overlay-icon {
+        font-size: 66px;
+    }
+
+    .joker-overlay-card h1 {
+        font-size: 30px;
+    }
+
+    .joker-overlay-card p {
+        font-size: 15px;
+    }
+
+    .joker-overlay-rate {
+        width: 88px;
+        height: 88px;
+        font-size: 28px;
+    }
+}
+
+/* =========================
+   Mission Notice Toast
+========================= */
+
+.mission-notice-toast {
+    position: fixed;
+    top: 22px;
+    right: 22px;
+    z-index: 10000;
+    width: min(340px, calc(100vw - 32px));
+    padding: 18px 20px;
+    border-radius: 18px;
+    background: radial-gradient(circle at top left, rgba(255, 215, 106, 0.28), transparent 40%),
+    linear-gradient(145deg, rgba(18, 22, 32, 0.98), rgba(10, 12, 18, 0.98));
+    border: 1px solid rgba(255, 215, 106, 0.65);
+    box-shadow: 0 18px 38px rgba(0, 0, 0, 0.48),
+    0 0 24px rgba(255, 215, 106, 0.22);
+    color: #ffffff;
+    animation: missionNoticePop 0.35s ease-out both;
+}
+
+.mission-notice-toast strong {
+    display: block;
+    color: #ffd76a;
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+.mission-notice-toast p {
+    margin: 0 0 6px;
+    font-size: 16px;
+    font-weight: 800;
+}
+
+.mission-notice-toast span {
+    color: #dddddd;
+    font-size: 14px;
+}
+
+@keyframes missionNoticePop {
+    0% {
+        opacity: 0;
+        transform: translateY(-14px) scale(0.92);
+    }
+
+    70% {
+        opacity: 1;
+        transform: translateY(4px) scale(1.03);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.sound-toggle-button,
+.support-card button {
+    width: 100%;
+    min-height: 46px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 215, 106, 0.7);
+    background: linear-gradient(135deg, #2b2413, #5b4519);
+    color: #ffe9a6;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.support-card {
+    border-color: rgba(255, 120, 120, 0.5);
+}
+
+.support-card p {
+    margin: 8px 0;
+}
+
+@media (max-width: 768px) and (orientation: portrait) {
+    .mission-notice-toast {
+        top: 12px;
+        left: 16px;
+        right: auto;
+        width: calc(100vw - 32px);
+        max-width: 340px;
+        padding: 14px 16px;
+        border-radius: 16px;
+        box-sizing: border-box;
+        transform-origin: top center;
+    }
+
+    .mission-notice-toast strong {
+        font-size: 18px;
+    }
+
+    .mission-notice-toast p {
+        font-size: 14px;
+    }
+
+    .mission-notice-toast span {
+        font-size: 12px;
+    }
+}
+
+.mini-choice-button.selected {
+    transform: translateY(-4px) scale(1.04);
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.55);
+    border: 2px solid gold;
+}
+
+/* =========================
+   MyPage Enhanced Stats
+========================= */
+
+.mypage-section {
+    width: min(1180px, 95%);
+    margin: 22px auto;
+    padding: 22px;
+    border-radius: 22px;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 215, 0, 0.22);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.22);
+    box-sizing: border-box;
+}
+
+.mypage-section h2 {
+    margin: 0 0 18px;
+    color: gold;
+}
+
+.mypage-profile-card {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    gap: 16px;
+    align-items: center;
+}
+
+.profile-point-box {
+    min-width: 150px;
+    padding: 14px 16px;
+    border-radius: 16px;
+    background: rgba(255, 215, 0, 0.12);
+    border: 1px solid rgba(255, 215, 0, 0.35);
+    text-align: center;
+}
+
+.profile-point-box p {
+    margin: 0 0 6px;
+    font-size: 14px;
+    color: #f5e6a8;
+}
+
+.profile-point-box strong {
+    color: gold;
+    font-size: 22px;
+}
+
+.enhanced-stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+
+.stat-card small {
+    display: block;
+    margin-top: 6px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.72);
+}
+
+.primary-stat {
+    border-color: rgba(255, 215, 0, 0.55);
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.14);
+}
+
+.mini-stats-box {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.mini-stats-box div {
+    padding: 18px;
+    border-radius: 18px;
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    text-align: center;
+}
+
+.mini-stats-box span {
+    display: block;
+    margin-bottom: 8px;
+    color: #f5e6a8;
+    font-size: 14px;
+}
+
+.mini-stats-box strong {
+    color: gold;
+    font-size: 24px;
+}
+
+.hand-rank-list {
+    display: grid;
+    gap: 10px;
+}
+
+.hand-rank-item {
+    display: grid;
+    grid-template-columns: 44px 1fr auto;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    border-radius: 14px;
+    background: rgba(0, 0, 0, 0.24);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.hand-rank-number {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: gold;
+    color: #111;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: 900;
+}
+
+.hand-rank-name {
+    color: white;
+    font-weight: 700;
+}
+
+.hand-rank-item strong {
+    color: gold;
+}
+
+.log-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    min-height: 540px;
+    overflow-y: hidden;
+}
+
+@media (max-width: 768px) {
+    .mypage-section {
+        width: 95%;
+        padding: 16px;
+        border-radius: 18px;
+    }
+
+    .mypage-profile-card {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-point-box {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .mini-stats-box {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hand-rank-item {
+        grid-template-columns: 38px 1fr auto;
+        padding: 12px;
+    }
+}
+
+@media (max-width: 430px) {
+    .mini-stats-box {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================
+   Game Screen Final Fix V3
+   PC: 좌우 배치 유지
+   Mobile: 세로 배치
+========================= */
+
+@media (min-width: 901px) {
+    body {
+        background: radial-gradient(circle at top, rgba(19, 83, 61, 0.45), transparent 35%),
+        linear-gradient(180deg, #06251d 0%, #03120f 100%) !important;
+    }
+
+    .game-page {
+        width: min(1160px, 94vw) !important;
+        margin: 28px auto 60px !important;
+    }
+
+    .game-header {
+        margin-bottom: 22px !important;
+    }
+
+    .game-header h1 {
+        font-size: 36px !important;
+        margin: 0 0 6px !important;
+    }
+
+    .game-layout {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 270px !important;
+        gap: 20px !important;
+        align-items: start !important;
+    }
+
+    .game-main-panel {
+        padding: 22px !important;
+        border-radius: 22px !important;
+        background: radial-gradient(circle at center, rgba(17, 105, 75, 0.35), transparent 55%),
+        linear-gradient(145deg, #0d4c39, #04241c) !important;
+        border: 1px solid rgba(255, 215, 0, 0.25) !important;
+        box-shadow: 0 18px 45px rgba(0, 0, 0, 0.38) !important;
+    }
+
+    .table-top {
+        padding: 16px !important;
+        margin-bottom: 18px !important;
+        border-radius: 16px !important;
+        background: rgba(0, 0, 0, 0.28) !important;
+        border: 1px solid rgba(255, 215, 0, 0.22) !important;
+    }
+
+    .table-top h2 {
+        font-size: 24px !important;
+        margin: 0 0 8px !important;
+    }
+
+    .phase-text {
+        font-size: 14px !important;
+    }
+
+    .card-area {
+        min-height: 230px !important;
+        padding: 30px 18px !important;
+        gap: 16px !important;
+        flex-wrap: nowrap !important;
+        border-radius: 22px !important;
+        background: radial-gradient(circle at center, #127552 0%, #07533c 48%, #03291f 100%) !important;
+        border: 2px solid rgba(255, 215, 0, 0.8) !important;
+        box-shadow: inset 0 0 38px rgba(0, 0, 0, 0.34),
+        0 14px 28px rgba(0, 0, 0, 0.26) !important;
+    }
+
+    .card {
+        width: 90px !important;
+        height: 132px !important;
+        max-width: none !important;
+        min-width: 90px !important;
+        aspect-ratio: auto !important;
+        flex: 0 0 auto !important;
+        border-width: 4px !important;
+        border-radius: 12px !important;
+    }
+
+    .corner-rank {
+        font-size: 19px !important;
+    }
+
+    .corner-suit {
+        font-size: 15px !important;
+    }
+
+    .card-pip {
+        font-size: 21px !important;
+    }
+
+    .ace-suit {
+        font-size: 56px !important;
+    }
+
+    .face-svg {
+        width: 72px !important;
+        height: 72px !important;
+    }
+
+    .joker-center {
+        font-size: 42px !important;
+    }
+
+    .action-area {
+        margin-top: 20px !important;
+    }
+
+    .start-game-button,
+    .action-area > button {
+        width: 100% !important;
+        min-height: 46px !important;
+        border-radius: 12px !important;
+        font-size: 14px !important;
+        background: linear-gradient(135deg, #ffd000, #ff9f1c) !important;
+        color: #1c1300 !important;
+        font-weight: 900 !important;
+    }
+
+    .game-side-panel {
+        position: sticky !important;
+        top: 18px !important;
+        padding: 14px !important;
+        border-radius: 22px !important;
+        background: linear-gradient(145deg, #0a4735, #04271f) !important;
+        border: 1px solid rgba(255, 215, 0, 0.22) !important;
+        box-shadow: 0 16px 38px rgba(0, 0, 0, 0.36) !important;
+    }
+
+    .side-card {
+        padding: 13px !important;
+        margin-bottom: 12px !important;
+        border-radius: 15px !important;
+        background: rgba(0, 0, 0, 0.22) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+
+    .side-card h3 {
+        font-size: 15px !important;
+        margin: 0 0 10px !important;
+        padding-bottom: 8px !important;
+    }
+
+    .side-card p {
+        font-size: 12px !important;
+        line-height: 1.45 !important;
+        margin: 6px 0 !important;
+    }
+
+    .side-card input {
+        width: 100% !important;
+        height: 38px !important;
+        font-size: 14px !important;
+        border-radius: 9px !important;
+        box-sizing: border-box !important;
+    }
+
+    .payout-list p {
+        font-size: 11.5px !important;
+        margin: 5px 0 !important;
+    }
+
+    .sound-toggle-button {
+        width: 100% !important;
+        min-height: 40px !important;
+        font-size: 13px !important;
+        border-radius: 10px !important;
+    }
+
+    .side-action-button {
+        width: 100% !important;
+        min-height: 44px !important;
+        margin-top: 8px !important;
+        padding: 10px 12px !important;
+        border-radius: 12px !important;
+        font-size: 14px !important;
+        font-weight: 900 !important;
+    }
+
+    .side-action-rule {
+        background: linear-gradient(135deg, #ffd000, #ff8a1c) !important;
+        color: #1f1300 !important;
+    }
+
+    .side-action-mypage {
+        background: linear-gradient(135deg, #f5f5f5, #d8dde5) !important;
+        color: #111 !important;
+    }
+
+    .side-action-logout {
+        background: linear-gradient(135deg, #8b1f1f, #bd3333) !important;
+        color: white !important;
+    }
+}
+
+/* 태블릿 / 모바일 */
+
+@media (max-width: 900px) {
+    .game-page {
+        width: 100% !important;
+        margin: 0 auto 40px !important;
+        padding: 12px !important;
+        box-sizing: border-box !important;
+    }
+
+    .game-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 18px !important;
+    }
+
+    .game-main-panel,
+    .game-side-panel {
+        width: 100% !important;
+        box-sizing: border-box !important;
+    }
+
+    .card-area {
+        min-height: 150px !important;
+        padding: 20px 6px !important;
+        gap: 6px !important;
+        flex-wrap: nowrap !important;
+    }
+
+    .card {
+        width: calc((100vw - 92px) / 5) !important;
+        min-width: 0 !important;
+        max-width: 70px !important;
+        height: auto !important;
+        aspect-ratio: 68 / 100 !important;
+        flex: 0 1 auto !important;
+    }
+
+    .button-row,
+    .mini-button-row,
+    .mini-choice-row {
+        flex-direction: row !important;
+        gap: 10px !important;
+    }
+}
+
+/* =========================
+   Game Rule Modal
+   게임 방법 모달
+========================= */
+
+.rule-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 13000;
+    background: rgba(0, 0, 0, 0.72);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.rule-modal {
+    width: min(760px, 96vw);
+    max-height: 86vh;
+    background: radial-gradient(circle at top left, rgba(255, 215, 0, 0.16), transparent 38%),
+    linear-gradient(145deg, #123f31, #062d22);
+    border: 2px solid rgba(255, 215, 0, 0.42);
+    border-radius: 24px;
+    color: white;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
+    overflow: hidden;
+    animation: ruleModalPop 0.25s ease-out both;
+}
+
+.rule-modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 22px;
+    background: rgba(4, 34, 26, 0.96);
+    border-bottom: 1px solid rgba(255, 215, 0, 0.25);
+}
+
+.rule-modal-header h2 {
+    margin: 0;
+    color: gold;
+    font-size: 28px;
+}
+
+.rule-modal-header p {
+    margin: 5px 0 0;
+    color: #d6f5e8;
+    font-size: 14px;
+}
+
+.rule-close-button {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    min-height: 42px;
+    margin: 0;
+    padding: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    font-size: 28px;
+    line-height: 1;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    cursor: pointer;
+}
+
+.rule-close-button:hover {
+    background: rgba(255, 215, 0, 0.25);
+}
+
+.rule-modal-content {
+    max-height: calc(86vh - 86px);
+    overflow-y: auto;
+    padding: 22px;
+    box-sizing: border-box;
+}
+
+.rule-modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.rule-modal-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 999px;
+}
+
+.rule-modal-content::-webkit-scrollbar-thumb {
+    background: gold;
+    border-radius: 999px;
+}
+
+.rule-section {
+    padding: 18px;
+    margin-bottom: 16px;
+    border-radius: 18px;
+    background: rgba(0, 0, 0, 0.24);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rule-section h3 {
+    margin: 0 0 12px;
+    color: gold;
+    font-size: 20px;
+}
+
+.rule-section ol,
+.rule-section ul {
+    margin: 0;
+    padding-left: 22px;
+    text-align: left;
+}
+
+.rule-section li {
+    margin: 8px 0;
+    line-height: 1.55;
+    color: #f4fff9;
+}
+
+.rule-payout-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.rule-payout-grid div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.rule-payout-grid span {
+    color: white;
+    font-weight: 700;
+}
+
+.rule-payout-grid strong {
+    color: gold;
+}
+
+/* 게임 방법 버튼 */
+
+.side-action-rule {
+    background: linear-gradient(135deg, #ffd000, #ff8a1c) !important;
+    color: #1f1300 !important;
+}
+
+@keyframes ruleModalPop {
+    0% {
+        opacity: 0;
+        transform: translateY(12px) scale(0.96);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 768px) {
+    .rule-modal-backdrop {
+        padding: 12px;
+        align-items: center;
+    }
+
+    .rule-modal {
+        width: 100%;
+        max-height: 88vh;
+        border-radius: 20px;
+    }
+
+    .rule-modal-header {
+        padding: 16px;
+    }
+
+    .rule-modal-header h2 {
+        font-size: 23px;
+    }
+
+    .rule-modal-header p {
+        font-size: 13px;
+    }
+
+    .rule-close-button {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        min-height: 40px;
+        font-size: 24px;
+    }
+
+    .rule-modal-content {
+        max-height: calc(88vh - 78px);
+        padding: 16px;
+    }
+
+    .rule-section {
+        padding: 14px;
+    }
+
+    .rule-section h3 {
+        font-size: 18px;
+    }
+
+    .rule-section li {
+        font-size: 14px;
+    }
+
+    .rule-payout-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================
+   Casino Topbar
+========================= */
+
+.casino-topbar {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto 18px;
+    padding: 16px 18px;
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: 1.1fr 1.4fr auto;
+    gap: 16px;
+    align-items: center;
+    background: radial-gradient(circle at top left, rgba(255, 215, 0, 0.18), transparent 34%),
+    linear-gradient(145deg, rgba(7, 68, 50, 0.98), rgba(3, 28, 23, 0.98));
+    border: 1px solid rgba(255, 215, 0, 0.32);
+    border-radius: 22px;
+    box-shadow: 0 18px 42px rgba(0, 0, 0, 0.42);
+}
+
+.casino-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.casino-logo {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    background: radial-gradient(circle, #ffe56d, #b88400);
+    color: #07281f;
+    font-size: 31px;
+    font-weight: 900;
+    box-shadow: 0 0 24px rgba(255, 215, 0, 0.42);
+}
+
+.casino-brand h1 {
+    margin: 0;
+    color: gold;
+    font-size: 29px;
+    letter-spacing: 0.5px;
+}
+
+.casino-brand p {
+    margin: 4px 0 0;
+    color: #d6f5e8;
+    font-size: 13px;
+}
+
+.casino-status-area {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(90px, 1fr));
+    gap: 10px;
+}
+
+.casino-status-chip {
+    padding: 10px 12px;
+    border-radius: 15px;
+    text-align: center;
+    background: rgba(0, 0, 0, 0.28);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+}
+
+.casino-status-chip span {
+    display: block;
+    margin-bottom: 4px;
+    font-size: 11px;
+    color: #c8eadf;
+    letter-spacing: 1px;
+}
+
+.casino-status-chip strong {
+    display: block;
+    color: white;
+    font-size: 17px;
+}
+
+.casino-status-chip.jackpot strong {
+    color: gold;
+}
+
+.casino-status-chip.joker.boost {
+    border-color: rgba(183, 108, 255, 0.75);
+    box-shadow: 0 0 18px rgba(183, 108, 255, 0.25);
+}
+
+.casino-status-chip.joker.guaranteed {
+    border-color: rgba(255, 72, 72, 0.85);
+    box-shadow: 0 0 22px rgba(255, 72, 72, 0.28);
+}
+
+.casino-status-chip.joker.boost strong {
+    color: #d9a7ff;
+}
+
+.casino-status-chip.joker.guaranteed strong {
+    color: #ff7777;
+}
+
+.casino-menu {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.casino-menu button {
+    width: auto;
+    min-width: 78px;
+    min-height: 42px;
+    margin: 0;
+    padding: 0 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 900;
+    background: linear-gradient(135deg, #f5f5f5, #d7dce5);
+    color: #111;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+}
+
+.casino-menu button:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+.casino-menu .casino-logout-button {
+    background: linear-gradient(135deg, #8b1f1f, #bd3333);
+    color: white;
+}
+
+/* =========================
+   Settings Modal
+========================= */
+
+.settings-modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 14000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    box-sizing: border-box;
+    background: rgba(0, 0, 0, 0.72);
+}
+
+.settings-modal {
+    width: min(540px, 96vw);
+    max-height: 88vh;
+    overflow: hidden;
+    border-radius: 24px;
+    color: white;
+    background: radial-gradient(circle at top left, rgba(255, 215, 0, 0.17), transparent 36%),
+    linear-gradient(145deg, #123f31, #062d22);
+    border: 2px solid rgba(255, 215, 0, 0.42);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.65);
+    animation: settingsPop 0.24s ease-out both;
+}
+
+.settings-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 22px;
+    background: rgba(4, 34, 26, 0.96);
+    border-bottom: 1px solid rgba(255, 215, 0, 0.25);
+}
+
+.settings-modal-header h2 {
+    margin: 0;
+    color: gold;
+    font-size: 27px;
+}
+
+.settings-modal-header p {
+    margin: 5px 0 0;
+    color: #d6f5e8;
+    font-size: 14px;
+}
+
+.settings-close-button {
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    min-height: 42px;
+    margin: 0;
+    padding: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    font-size: 28px;
+    line-height: 1;
+}
+
+.settings-modal-content {
+    max-height: calc(88vh - 88px);
+    overflow-y: auto;
+    padding: 20px 22px 22px;
+    box-sizing: border-box;
+}
+
+.settings-section {
+    padding: 16px;
+    margin-bottom: 16px;
+    border-radius: 18px;
+    background: rgba(0, 0, 0, 0.24);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-section h3 {
+    margin: 0 0 14px;
+    color: gold;
+    font-size: 19px;
+}
+
+.settings-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+}
+
+.settings-row + .settings-row {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.settings-row strong {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.settings-row p {
+    margin: 0;
+    color: #d6f5e8;
+    font-size: 13px;
+    line-height: 1.45;
+}
+
+.settings-toggle-button,
+.settings-disabled-button {
+    width: 110px;
+    min-width: 110px;
+    min-height: 40px;
+    margin: 0;
+    border-radius: 999px;
+    background: #333;
+    color: white;
+}
+
+.settings-toggle-button.active {
+    background: linear-gradient(135deg, #ffd000, #ff9f1c);
+    color: #1e1300;
+}
+
+.settings-disabled-button {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+@keyframes settingsPop {
+    0% {
+        opacity: 0;
+        transform: translateY(12px) scale(0.96);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =========================
+   Responsive Topbar
+========================= */
+
+@media (max-width: 1000px) {
+    .casino-topbar {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .casino-brand {
+        justify-content: center;
+    }
+
+    .casino-menu {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .casino-topbar {
+        padding: 14px;
+        border-radius: 18px;
+    }
+
+    .casino-brand h1 {
+        font-size: 25px;
+    }
+
+    .casino-logo {
+        width: 46px;
+        height: 46px;
+        min-width: 46px;
+        font-size: 27px;
+    }
+
+    .casino-status-area {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .casino-menu {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .casino-menu button {
+        width: 100%;
+        min-height: 46px;
+    }
+
+    .settings-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .settings-toggle-button,
+    .settings-disabled-button {
+        width: 100%;
+    }
+}
+
+/* =========================
+   Control Panel Redesign
+========================= */
+
+.control-panel {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+}
+
+.control-panel-header {
+    padding: 16px !important;
+    border-radius: 18px !important;
+    background: radial-gradient(circle at top left, rgba(255, 215, 0, 0.16), transparent 40%),
+    rgba(0, 0, 0, 0.26) !important;
+    border: 1px solid rgba(255, 215, 0, 0.22) !important;
+}
+
+.control-panel-header h2 {
+    margin: 0 0 6px !important;
+    color: gold !important;
+    font-size: 20px !important;
+}
+
+.control-panel-header p {
+    margin: 0 !important;
+    color: #d6f5e8 !important;
+    font-size: 13px !important;
+}
+
+.bet-control-card {
+    border-color: rgba(255, 215, 0, 0.28) !important;
+}
+
+.bet-input-box label {
+    display: block !important;
+    margin-bottom: 8px !important;
+    color: #f7e7a4 !important;
+    font-weight: 800 !important;
+    font-size: 13px !important;
+}
+
+.bet-input-box input {
+    width: 100% !important;
+    height: 44px !important;
+    padding: 0 12px !important;
+    border-radius: 12px !important;
+    border: 1px solid rgba(255, 215, 0, 0.45) !important;
+    background: rgba(0, 0, 0, 0.32) !important;
+    color: white !important;
+    font-size: 17px !important;
+    font-weight: 900 !important;
+    box-sizing: border-box !important;
+}
+
+.bet-help-text {
+    display: block !important;
+    margin: 10px 0 0 !important;
+    font-size: 13px !important;
+    color: #d6f5e8 !important;
+}
+
+.bet-help-text strong {
+    color: gold !important;
+}
+
+.bet-locked-text {
+    margin: 8px 0 0 !important;
+    color: #ffcc88 !important;
+    font-size: 12px !important;
+}
+
+.round-info-card {
+    border-color: rgba(118, 196, 255, 0.22) !important;
+}
+
+.round-info-row {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    gap: 12px !important;
+    padding: 8px 0 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.round-info-row:last-of-type {
+    border-bottom: none !important;
+}
+
+.round-info-row span {
+    color: #d6f5e8 !important;
+    font-size: 13px !important;
+}
+
+.round-info-row strong {
+    color: gold !important;
+    font-size: 15px !important;
+}
+
+.special-round-mini-badge {
+    margin-top: 12px !important;
+    padding: 10px 12px !important;
+    border-radius: 14px !important;
+    text-align: center !important;
+    font-weight: 900 !important;
+    font-size: 13px !important;
+}
+
+.special-round-mini-badge.boost {
+    background: rgba(168, 85, 247, 0.18) !important;
+    border: 1px solid rgba(168, 85, 247, 0.5) !important;
+    color: #ead5ff !important;
+}
+
+.special-round-mini-badge.guaranteed {
+    background: rgba(245, 158, 11, 0.18) !important;
+    border: 1px solid rgba(245, 158, 11, 0.55) !important;
+    color: #ffe8a3 !important;
+}
+
+.payout-side-card {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.compact-payout-list {
+    display: grid !important;
+    gap: 6px !important;
+}
+
+.compact-payout-list p {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin: 0 !important;
+    padding: 7px 9px !important;
+    border-radius: 10px !important;
+    background: rgba(0, 0, 0, 0.22) !important;
+    font-size: 12.5px !important;
+}
+
+.compact-payout-list span {
+    color: #f2fff9 !important;
+}
+
+.compact-payout-list strong {
+    color: gold !important;
+}
+
+.support-card button {
+    width: 100% !important;
+    min-height: 42px !important;
+    border-radius: 12px !important;
+    background: linear-gradient(135deg, #ffd000, #ff9f1c) !important;
+    color: #1c1300 !important;
+    font-weight: 900 !important;
+}
+
+.support-message {
+    margin-top: 10px !important;
+    color: gold !important;
+    font-weight: 800 !important;
+    font-size: 13px !important;
+}
+
+/* PC에서는 컨트롤 패널을 깔끔하게 */
+
+@media (min-width: 901px) {
+    .game-side-panel.control-panel {
+        position: sticky !important;
+        top: 18px !important;
+    }
+}
+
+/* 모바일에서는 아래로 자연스럽게 */
+
+@media (max-width: 900px) {
+    .game-side-panel.control-panel {
+        position: static !important;
+    }
+}
+
+/* =========================
+   Main Poker Table Redesign
+========================= */
+
+.game-main-panel {
+    position: relative !important;
+    overflow: hidden !important;
+    padding: 26px !important;
+    border-radius: 28px !important;
+    background: radial-gradient(circle at center 42%, rgba(25, 145, 95, 0.35), transparent 44%),
+    linear-gradient(145deg, #0c4a38, #031c17) !important;
+    border: 1px solid rgba(255, 215, 0, 0.28) !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.48),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04) !important;
+}
+
+.game-main-panel::before {
+    content: "";
+    position: absolute;
+    inset: 18px;
+    border-radius: 34px;
+    border: 2px solid rgba(255, 215, 0, 0.22);
+    pointer-events: none;
+}
+
+.game-main-panel::after {
+    content: "POKER TABLE";
+    position: absolute;
+    left: 50%;
+    top: 150px;
+    transform: translateX(-50%);
+    color: rgba(255, 215, 0, 0.08);
+    font-size: 52px;
+    font-weight: 900;
+    letter-spacing: 4px;
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+/* 카드 테이블 상단 안내 */
+
+/* 카드 놓는 테이블 */
+
+.card-area::before {
+    content: "";
+    position: absolute;
+    inset: 14px;
+    border-radius: 999px;
+    border: 1px dashed rgba(255, 215, 0, 0.28);
+    pointer-events: none;
+}
+
+.card-area::after {
+    content: "HOLD CARDS";
+    position: absolute;
+    bottom: 18px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: rgba(255, 255, 255, 0.14);
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 3px;
+    pointer-events: none;
+}
+
+/* 카드 입체감 강화 */
+
+.card.card-reveal:hover {
+    transform: translateY(-10px) scale(1.03) !important;
+    box-shadow: 0 18px 30px rgba(0, 0, 0, 0.5),
+    0 0 18px rgba(255, 215, 0, 0.25) !important;
+}
+
+/* HOLD 카드 더 명확하게 */
+
+/* 결과 카드 강조 */
+
+/* 액션 영역 */
+
+.action-area button {
+    min-height: 52px !important;
+    border-radius: 16px !important;
+    font-size: 16px !important;
+    font-weight: 900 !important;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.28) !important;
+}
+
+/* 일반 메인 버튼 */
+
+.start-game-button,
+.action-area > button {
+    background: linear-gradient(135deg, #ffd000, #ff9f1c) !important;
+    color: #1f1300 !important;
+}
+
+/* 미니게임 박스도 카드 테이블 분위기로 */
+
+.mini-box h3 {
+    margin-top: 0 !important;
+    color: #ead5ff !important;
+}
+
+/* 미니게임 버튼 좌우 유지 */
+
+.button-row,
+.mini-button-row,
+.mini-choice-row {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 12px !important;
+}
+
+.button-row button,
+.mini-button-row button,
+.mini-choice-row button {
+    flex: 1 !important;
+}
+
+/* 결과 메시지 */
+
+.result-text,
+.game-result-text {
+    padding: 14px 16px !important;
+    border-radius: 14px !important;
+    background: rgba(0, 0, 0, 0.26) !important;
+    border: 1px solid rgba(255, 215, 0, 0.18) !important;
+    color: #fff8d6 !important;
+    font-weight: 800 !important;
+}
+
+/* 모바일 */
+
+@media (max-width: 768px) {
+    .game-main-panel::before {
+        inset: 10px !important;
+        border-radius: 24px !important;
+    }
+
+    .game-main-panel::after {
+        top: 135px !important;
+        font-size: 26px !important;
+        letter-spacing: 2px !important;
+    }
+
+    .card-area::after {
+        bottom: 10px !important;
+        font-size: 10px !important;
+        letter-spacing: 2px !important;
+    }
+
+    .button-row,
+    .mini-button-row,
+    .mini-choice-row {
+        flex-direction: row !important;
+    }
+}
+
+/* =========================
+   Result Screen Redesign
+========================= */
+
+.result-screen {
+    width: min(760px, 100%) !important;
+    margin: 24px auto 0 !important;
+    padding: 0 !important;
+    border-radius: 26px !important;
+    overflow: hidden !important;
+    background: radial-gradient(circle at top, rgba(255, 215, 0, 0.16), transparent 42%),
+    linear-gradient(145deg, #062d22, #031a15) !important;
+    border: 2px solid rgba(255, 215, 0, 0.5) !important;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.58),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05) !important;
+    text-align: center !important;
+}
+
+.result-hero {
+    position: relative !important;
+    padding: 28px 20px 24px !important;
+    background: radial-gradient(circle at center, rgba(255, 255, 255, 0.08), transparent 55%),
+    rgba(0, 0, 0, 0.3) !important;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.22) !important;
+}
+
+.result-hero.win {
+    background: radial-gradient(circle at center, rgba(255, 215, 0, 0.23), transparent 58%),
+    linear-gradient(145deg, rgba(11, 83, 60, 0.9), rgba(4, 35, 28, 0.95)) !important;
+}
+
+.result-hero.lose {
+    background: radial-gradient(circle at center, rgba(255, 80, 80, 0.18), transparent 58%),
+    linear-gradient(145deg, rgba(69, 17, 17, 0.92), rgba(27, 8, 8, 0.96)) !important;
+}
+
+.result-hero h2 {
+    margin: 10px 0 8px !important;
+    color: gold !important;
+    font-size: 42px !important;
+    font-weight: 1000 !important;
+    letter-spacing: 2px !important;
+    text-shadow: 0 0 18px rgba(255, 215, 0, 0.35) !important;
+}
+
+.result-hero.lose h2 {
+    color: #ff8b8b !important;
+    text-shadow: 0 0 18px rgba(255, 90, 90, 0.35) !important;
+}
+
+.result-hero p {
+    margin: 0 !important;
+    color: #eafff6 !important;
+    font-size: 17px !important;
+}
+
+.result-hero p strong {
+    color: white !important;
+    font-size: 22px !important;
+}
+
+.result-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 86px !important;
+    height: 34px !important;
+    padding: 0 16px !important;
+    border-radius: 999px !important;
+    background: linear-gradient(135deg, #ffd000, #ff9f1c) !important;
+    color: #211400 !important;
+    font-weight: 1000 !important;
+    letter-spacing: 1.5px !important;
+    box-shadow: 0 0 22px rgba(255, 215, 0, 0.42) !important;
+}
+
+.result-hero.lose .result-badge {
+    background: linear-gradient(135deg, #ff6b6b, #9b1c1c) !important;
+    color: white !important;
+    box-shadow: 0 0 22px rgba(255, 80, 80, 0.35) !important;
+}
+
+.result-jackpot-label {
+    display: inline-flex !important;
+    margin-top: 16px !important;
+    padding: 9px 16px !important;
+    border-radius: 999px !important;
+    background: rgba(255, 215, 0, 0.18) !important;
+    border: 1px solid rgba(255, 215, 0, 0.5) !important;
+    color: gold !important;
+    font-weight: 1000 !important;
+    letter-spacing: 1.2px !important;
+}
+
+.result-detail-card {
+    margin: 18px !important;
+    padding: 20px !important;
+    border-radius: 22px !important;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02)),
+    rgba(0, 0, 0, 0.28) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.result-main-reward {
+    margin-bottom: 18px !important;
+    padding: 18px !important;
+    border-radius: 20px !important;
+    background: radial-gradient(circle at center, rgba(255, 215, 0, 0.22), transparent 60%),
+    rgba(0, 0, 0, 0.34) !important;
+    border: 1px solid rgba(255, 215, 0, 0.35) !important;
+}
+
+.result-main-reward span {
+    display: block !important;
+    margin-bottom: 6px !important;
+    color: #d6f5e8 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+}
+
+.result-main-reward strong {
+    display: block !important;
+    color: gold !important;
+    font-size: 44px !important;
+    font-weight: 1000 !important;
+    line-height: 1.1 !important;
+}
+
+.result-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
+}
+
+.result-item {
+    padding: 14px 12px !important;
+    border-radius: 16px !important;
+    background: rgba(0, 0, 0, 0.26) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+.result-item span {
+    display: block !important;
+    margin-bottom: 6px !important;
+    color: #d6f5e8 !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+}
+
+.result-item strong {
+    display: block !important;
+    color: white !important;
+    font-size: 18px !important;
+    font-weight: 1000 !important;
+}
+
+.result-summary-text {
+    margin: 16px 0 0 !important;
+    padding: 13px 14px !important;
+    border-radius: 14px !important;
+    color: #fff7cd !important;
+    background: rgba(255, 215, 0, 0.09) !important;
+    border: 1px solid rgba(255, 215, 0, 0.18) !important;
+    font-weight: 800 !important;
+    line-height: 1.55 !important;
+}
+
+.result-action-row {
+    display: grid !important;
+    grid-template-columns: 1.3fr 1fr !important;
+    gap: 12px !important;
+    padding: 0 18px 20px !important;
+}
+
+.result-main-button,
+.result-sub-button {
+    width: 100% !important;
+    min-height: 52px !important;
+    margin: 0 !important;
+    border-radius: 16px !important;
+    font-size: 16px !important;
+    font-weight: 1000 !important;
+}
+
+.result-main-button {
+    background: linear-gradient(135deg, #ffd000, #ff9f1c) !important;
+    color: #1f1300 !important;
+}
+
+.result-sub-button {
+    background: linear-gradient(135deg, #f2f2f2, #cfd7e3) !important;
+    color: #111 !important;
+}
+
+.result-screen .result-lose .result-main-reward strong,
+.result-lose .result-main-reward strong {
+    color: #ff8b8b !important;
+}
+
+@media (max-width: 768px) {
+    .result-screen {
+        width: 100% !important;
+        border-radius: 22px !important;
+    }
+
+    .result-hero {
+        padding: 24px 14px 20px !important;
+    }
+
+    .result-hero h2 {
+        font-size: 34px !important;
+    }
+
+    .result-hero p strong {
+        font-size: 19px !important;
+    }
+
+    .result-detail-card {
+        margin: 14px !important;
+        padding: 16px !important;
+    }
+
+    .result-main-reward strong {
+        font-size: 34px !important;
+    }
+
+    .result-action-row {
+        grid-template-columns: 1fr !important;
+        padding: 0 14px 16px !important;
+    }
+}
+
+@media (max-width: 430px) {
+    .result-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* =========================
+   Joker Card Visual Upgrade
+   기존 카드 애니메이션은 유지
+========================= */
+
+.joker-top,
+.joker-bottom {
+    color: #f3e8ff !important;
+    text-shadow: 0 0 8px rgba(192, 132, 252, 0.9);
+}
+
+/* 조커가 승리 카드일 때 더 강하게 */
+
+.joker-card.winning-card {
+    box-shadow: 0 0 0 5px rgba(255, 215, 0, 0.75),
+    0 0 30px rgba(255, 215, 0, 0.75),
+    0 0 46px rgba(192, 132, 252, 0.75),
+    0 22px 38px rgba(0, 0, 0, 0.55) !important;
+}
+
+/* =========================
+   Sound Volume Setting
+========================= */
+
+.volume-control {
+    width: 180px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.volume-control input[type="range"] {
+    width: 120px;
+    accent-color: gold;
+    cursor: pointer;
+}
+
+.volume-control span {
+    min-width: 42px;
+    color: gold;
+    font-weight: 900;
+    text-align: right;
+}
+
+@media (max-width: 768px) {
+    .volume-control {
+        width: 100%;
+    }
+
+    .volume-control input[type="range"] {
+        width: 100%;
+    }
+}
+
+/* =========================
+   Real Theme / Card Design Settings
+========================= */
+
+.settings-row-column {
+    flex-direction: column !important;
+    align-items: stretch !important;
+}
+
+.settings-option-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+}
+
+.settings-option-button {
+    width: 100% !important;
+    min-height: 42px !important;
+    margin: 0 !important;
+    border-radius: 999px !important;
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #eafff6 !important;
+    border: 1px solid rgba(255, 255, 255, 0.14) !important;
+    font-weight: 900 !important;
+}
+
+.settings-option-button.active {
+    background: linear-gradient(135deg, #ffd000, #ff9f1c) !important;
+    color: #1e1300 !important;
+    border-color: rgba(255, 215, 0, 0.9) !important;
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.35) !important;
+}
+
+/* =========================
+   Theme: Casino Green
+========================= */
+
+.game-page.theme-casino {
+    background: radial-gradient(circle at top, rgba(255, 215, 0, 0.08), transparent 38%),
+    transparent !important;
+}
+
+/* =========================
+   Theme: Dark
+========================= */
+
+.game-page.theme-dark {
+    color: #f5f7fb !important;
+}
+
+.game-page.theme-dark .casino-topbar,
+.game-page.theme-dark .game-main-panel,
+.game-page.theme-dark .game-side-panel,
+.game-page.theme-dark .side-card,
+.game-page.theme-dark .control-panel-card,
+.game-page.theme-dark .mini-box,
+.game-page.theme-dark .result-screen {
+    background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.06), transparent 36%),
+    linear-gradient(145deg, #1a1d24, #080a0f) !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
+}
+
+.game-page.theme-dark .table-top,
+.game-page.theme-dark .action-area {
+    background: rgba(0, 0, 0, 0.45) !important;
+    border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+.game-page.theme-dark .card-area {
+    background: radial-gradient(circle at center, #2c3442 0%, #141922 48%, #05070b 100%) !important;
+    border-color: rgba(220, 230, 255, 0.45) !important;
+}
+
+.game-page.theme-dark .casino-brand h1,
+.game-page.theme-dark .table-top h2,
+.game-page.theme-dark .side-card h3,
+.game-page.theme-dark .settings-section h3 {
+    color: #e8edf8 !important;
+}
+
+/* =========================
+   Theme: Royal Purple
+========================= */
+
+.game-page.theme-purple {
+    color: #fff7ff !important;
+}
+
+.game-page.theme-purple .casino-topbar,
+.game-page.theme-purple .game-main-panel,
+.game-page.theme-purple .game-side-panel,
+.game-page.theme-purple .side-card,
+.game-page.theme-purple .control-panel-card,
+.game-page.theme-purple .mini-box,
+.game-page.theme-purple .result-screen {
+    background: radial-gradient(circle at top left, rgba(255, 215, 0, 0.13), transparent 34%),
+    linear-gradient(145deg, #3b0764, #12001f) !important;
+    border-color: rgba(216, 180, 254, 0.35) !important;
+}
+
+.game-page.theme-purple .table-top,
+.game-page.theme-purple .action-area {
+    background: rgba(30, 0, 55, 0.55) !important;
+    border-color: rgba(216, 180, 254, 0.25) !important;
+}
+
+.game-page.theme-purple .card-area {
+    background: radial-gradient(circle at center, #7e22ce 0%, #4c1d95 42%, #1e0736 100%) !important;
+    border-color: rgba(255, 215, 0, 0.72) !important;
+}
+
+.game-page.theme-purple .casino-brand h1,
+.game-page.theme-purple .table-top h2,
+.game-page.theme-purple .side-card h3,
+.game-page.theme-purple .settings-section h3 {
+    color: #ffd700 !important;
+}
+
+/* =========================
+   Card Design: Modern
+========================= */
+
+.game-page.card-design-modern .card {
+    border-radius: 18px !important;
+    border-width: 3px !important;
+    box-shadow: 0 18px 32px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.45) !important;
+}
+
+.game-page.card-design-modern .card-face {
+    border-radius: 15px !important;
+    background: radial-gradient(circle at top, #ffffff, #f3f5ff 70%) !important;
+}
+
+.game-page.card-design-modern .card-back-design {
+    border-radius: 14px !important;
+    background-color: #182235 !important;
+    background-image: repeating-linear-gradient(
+            45deg,
+            rgba(255, 255, 255, 0.12) 0px,
+            rgba(255, 255, 255, 0.12) 2px,
+            transparent 2px,
+            transparent 10px
+    ),
+    repeating-linear-gradient(
+            -45deg,
+            rgba(255, 255, 255, 0.12) 0px,
+            rgba(255, 255, 255, 0.12) 2px,
+            transparent 2px,
+            transparent 10px
+    ) !important;
+}
+
+/* =========================
+   Card Design: Luxury
+========================= */
+
+.game-page.card-design-luxury .card {
+    border-radius: 14px !important;
+    border: 4px solid #d4af37 !important;
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.18),
+    0 0 22px rgba(212, 175, 55, 0.35),
+    0 18px 34px rgba(0, 0, 0, 0.5) !important;
+}
+
+.game-page.card-design-luxury .card-face {
+    background: linear-gradient(145deg, #fff7dc, #ffffff 45%, #f7e7b0) !important;
+    border: 2px solid rgba(212, 175, 55, 0.65) !important;
+}
+
+.game-page.card-design-luxury .card-back-design {
+    border-radius: 9px !important;
+    background-color: #220909 !important;
+    background-image: repeating-linear-gradient(
+            45deg,
+            rgba(255, 215, 0, 0.18) 0px,
+            rgba(255, 215, 0, 0.18) 2px,
+            transparent 2px,
+            transparent 10px
+    ),
+    repeating-linear-gradient(
+            -45deg,
+            rgba(255, 215, 0, 0.18) 0px,
+            rgba(255, 215, 0, 0.18) 2px,
+            transparent 2px,
+            transparent 10px
+    ) !important;
+}
+
+.game-page.card-design-luxury .joker-face {
+    background: radial-gradient(circle at top, rgba(255, 215, 0, 0.35), transparent 38%),
+    radial-gradient(circle at center, #4c0519, #111111 72%) !important;
+    border-color: rgba(255, 215, 0, 0.8) !important;
+}
+
+@media (max-width: 768px) {
+    .settings-option-group {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* =========================
+   MyPage Log Filter
+========================= */
+
+.log-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 16px;
+    margin-bottom: 14px;
+}
+
+.log-section-header h2 {
+    margin-bottom: 4px;
+}
+
+.log-section-header p {
+    margin: 0;
+    color: #d6f5e8;
+    font-size: 13px;
+}
+
+.log-filter-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 16px;
+}
+
+.log-filter-bar button {
+    width: auto;
+    min-width: 84px;
+    min-height: 38px;
+    margin: 0;
+    padding: 0 13px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 215, 0, 0.26);
+    background: rgba(0, 0, 0, 0.24);
+    color: #eafff6;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.log-filter-bar button:hover {
+    transform: translateY(-1px);
+    background: rgba(255, 215, 0, 0.12);
+}
+
+.log-filter-bar button.active {
+    background: linear-gradient(135deg, #ffd000, #ff9f1c);
+    color: #1f1300;
+    border-color: rgba(255, 215, 0, 0.85);
+    box-shadow: 0 0 18px rgba(255, 215, 0, 0.28);
+}
+
+.log-win-row {
+    background: rgba(34, 197, 94, 0.06);
+}
+
+.log-lose-row {
+    background: rgba(239, 68, 68, 0.06);
+}
+
+.mini-result-badge,
+.jackpot-used-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 54px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+}
+
+.mini-success {
+    background: rgba(34, 197, 94, 0.18);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.45);
+}
+
+.mini-fail {
+    background: rgba(239, 68, 68, 0.18);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.45);
+}
+
+.mini-none {
+    background: rgba(255, 255, 255, 0.09);
+    color: #e5e7eb;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+}
+
+.jackpot-used-badge {
+    background: rgba(255, 215, 0, 0.16);
+    color: gold;
+    border: 1px solid rgba(255, 215, 0, 0.45);
+}
+
+@media (max-width: 768px) {
+    .log-section-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .log-filter-bar {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .log-filter-bar button {
+        width: 100%;
+    }
+}
+
+/* =========================
+   Game Log Detail Modal
+========================= */
+
+.clickable-log-row {
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.clickable-log-row:hover {
+    background: rgba(255, 215, 106, 0.12);
+    transform: scale(1.005);
+}
+
+.log-detail-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.72);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 18px;
+}
+
+.log-detail-modal {
+    width: min(720px, 95vw);
+    max-height: 88vh;
+    overflow-y: auto;
+    background: radial-gradient(circle at top, rgba(255, 215, 106, 0.14), transparent 38%),
+    linear-gradient(145deg, #171b25, #0d1018);
+    border: 1px solid rgba(255, 215, 106, 0.28);
+    border-radius: 24px;
+    padding: 24px;
+    color: #f5f5f5;
+    box-shadow: 0 28px 80px rgba(0, 0, 0, 0.65),
+    0 0 28px rgba(255, 215, 106, 0.14);
+}
+
+.log-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.log-detail-header h2 {
+    margin: 0;
+    color: #ffd76a;
+}
+
+.log-detail-header p {
+    margin: 6px 0 0;
+    color: #bfc3cf;
+    font-size: 14px;
+}
+
+.log-detail-header button {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.log-detail-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+}
+
+.log-detail-grid div {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 14px;
+}
+
+.log-detail-grid span {
+    display: block;
+    color: #aeb4c2;
+    font-size: 13px;
+    margin-bottom: 6px;
+}
+
+.log-detail-grid strong {
+    color: #ffd76a;
+    font-size: 18px;
+}
+
+.log-final-card-area {
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding-top: 20px;
+}
+
+.log-final-card-area h3 {
+    margin-bottom: 14px;
+    color: #ffd76a;
+}
+
+.log-final-card-list {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.log-mini-card {
+    width: 82px;
+    height: 116px;
+    border-radius: 14px;
+    background: linear-gradient(145deg, #ffffff, #e9e9e9);
+    color: #111111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.42),
+    inset 0 0 0 2px rgba(0, 0, 0, 0.08);
+}
+
+.log-mini-card span {
+    font-size: 20px;
+}
+
+.log-mini-card strong {
+    font-size: 34px;
+}
+
+.log-red-card {
+    color: #c91d1d;
+}
+
+.log-black-card {
+    color: #111111;
+}
+
+.log-joker-card {
+    color: #7a1cff;
+    background: radial-gradient(circle at center, rgba(255, 215, 106, 0.28), transparent 42%),
+    linear-gradient(145deg, #fff7d8, #f1e0ff);
+    border: 2px solid rgba(255, 215, 106, 0.85);
+}
+
+.log-joker-card span {
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.log-joker-card strong {
+    font-size: 38px;
+}
+
+@media (max-width: 640px) {
+    .log-detail-modal {
+        padding: 18px;
+    }
+
+    .log-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .log-mini-card {
+        width: 64px;
+        height: 92px;
+    }
+
+    .log-mini-card span {
+        font-size: 16px;
+    }
+
+    .log-mini-card strong {
+        font-size: 28px;
+    }
+}
+
+.joker-used-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 54px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 900;
+    background: rgba(168, 85, 247, 0.18);
+    color: #d8b4fe;
+    border: 1px solid rgba(168, 85, 247, 0.5);
+    box-shadow: 0 0 12px rgba(168, 85, 247, 0.22);
+}
+
+/* =========================
+   Mobile Landscape Mode
+   모바일 가로 화면 최적화
+========================= */
+
+@media (max-width: 900px) and (orientation: landscape) {
+    html,
+    body {
+        width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+    }
+
+    .game-page {
+        width: 100% !important;
+        max-width: 100vw !important;
+        margin: 0 auto !important;
+        padding: 8px !important;
+        box-sizing: border-box !important;
+    }
+
+    .game-header {
+        margin-bottom: 8px !important;
+    }
+
+    .game-header h1 {
+        font-size: 24px !important;
+        margin: 0 0 4px !important;
+    }
+
+    .game-header p {
+        font-size: 12px !important;
+        line-height: 1.3 !important;
+    }
+
+    .joker-round-banner {
+        margin-bottom: 8px !important;
+        padding: 8px 12px !important;
+        flex-direction: row !important;
+        text-align: left !important;
+        gap: 10px !important;
+        border-radius: 14px !important;
+    }
+
+    .joker-round-icon {
+        font-size: 26px !important;
+    }
+
+    .joker-round-text strong {
+        font-size: 15px !important;
+    }
+
+    .joker-round-text p {
+        font-size: 11px !important;
+    }
+
+    .joker-round-rate {
+        width: 52px !important;
+        height: 52px !important;
+        min-width: 52px !important;
+        font-size: 17px !important;
+    }
+
+    .game-layout {
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) 230px !important;
+        gap: 10px !important;
+        align-items: start !important;
+    }
+
+    .game-main-panel,
+    .game-side-panel {
+        width: 100% !important;
+        padding: 10px !important;
+        border-radius: 16px !important;
+        box-sizing: border-box !important;
+    }
+
+    .game-main-panel {
+        order: unset !important;
+    }
+
+    .game-side-panel {
+        order: unset !important;
+        max-height: calc(100vh - 24px) !important;
+        overflow-y: auto !important;
+        padding-right: 8px !important;
+    }
+
+    .table-top {
+        padding: 8px 10px !important;
+        margin-bottom: 10px !important;
+        border-radius: 12px !important;
+    }
+
+    .table-top h2 {
+        font-size: 18px !important;
+        margin-bottom: 4px !important;
+    }
+
+    .phase-text {
+        font-size: 12px !important;
+        line-height: 1.3 !important;
+    }
+
+    .card-area {
+        min-height: 132px !important;
+        padding: 14px 6px !important;
+        gap: 7px !important;
+        flex-wrap: nowrap !important;
+        overflow: visible !important;
+        border-radius: 16px !important;
+    }
+
+    .card {
+        width: 68px !important;
+        min-width: 68px !important;
+        max-width: 68px !important;
+        height: 100px !important;
+        aspect-ratio: auto !important;
+        flex: 0 0 auto !important;
+        border-width: 3px !important;
+        border-radius: 10px !important;
+    }
+
+    .corner-rank {
+        font-size: 13px !important;
+    }
+
+    .corner-suit {
+        font-size: 11px !important;
+    }
+
+    .card-pips {
+        inset: 18px 8px 18px 8px !important;
+    }
+
+    .card-pip {
+        font-size: 14px !important;
+    }
+
+    .ace-suit {
+        font-size: 34px !important;
+    }
+
+    .face-svg {
+        width: 50px !important;
+        height: 50px !important;
+    }
+
+    .joker-center {
+        font-size: 28px !important;
+    }
+
+    .hold-badge {
+        top: -10px !important;
+        font-size: 9px !important;
+        padding: 2px 7px !important;
+    }
+
+    .action-area {
+        margin-top: 10px !important;
+    }
+
+    .action-area button,
+    .start-game-button {
+        min-height: 44px !important;
+        padding: 8px 10px !important;
+        font-size: 14px !important;
+        border-radius: 12px !important;
+    }
+
+    .button-row,
+    .mini-button-row,
+    .mini-choice-row {
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 8px !important;
+    }
+
+    .button-row button,
+    .mini-button-row button,
+    .mini-choice-row button {
+        min-height: 44px !important;
+        padding: 8px 6px !important;
+        font-size: 13px !important;
+        border-radius: 12px !important;
+        white-space: nowrap !important;
+    }
+
+    .side-card {
+        padding: 10px !important;
+        margin-bottom: 8px !important;
+        border-radius: 14px !important;
+    }
+
+    .side-card h3 {
+        font-size: 15px !important;
+        margin-bottom: 6px !important;
+        padding-bottom: 5px !important;
+    }
+
+    .side-card p {
+        font-size: 12px !important;
+        line-height: 1.35 !important;
+        margin: 5px 0 !important;
+    }
+
+    .side-card input {
+        height: 40px !important;
+        font-size: 15px !important;
+        border-radius: 10px !important;
+    }
+
+    .payout-list p {
+        font-size: 11px !important;
+        line-height: 1.25 !important;
+    }
+
+    .side-action-button,
+    .sound-toggle-button,
+    .support-card button {
+        min-height: 42px !important;
+        padding: 8px 10px !important;
+        font-size: 13px !important;
+        border-radius: 12px !important;
+        margin-top: 7px !important;
+    }
+
+    .mini-box {
+        margin-top: 10px !important;
+        padding: 10px !important;
+        border-radius: 14px !important;
+    }
+
+    .mini-box h2 {
+        font-size: 17px !important;
+        line-height: 1.3 !important;
+    }
+
+    .mini-box h3 {
+        font-size: 15px !important;
+    }
+
+    .mini-box p {
+        font-size: 12px !important;
+        line-height: 1.35 !important;
+    }
+
+    .mini-card-area {
+        gap: 12px !important;
+        margin: 10px 0 !important;
+    }
+
+    .mini-card-area .card {
+        width: 62px !important;
+        min-width: 62px !important;
+        height: 92px !important;
+    }
+
+    .mini-choice-button {
+        width: auto !important;
+        flex: 1 1 0 !important;
+        min-height: 44px !important;
+        font-size: 14px !important;
+        border-radius: 12px !important;
+    }
+
+    .result-box {
+        margin-top: 10px !important;
+        padding: 10px !important;
+        border-radius: 14px !important;
+    }
+
+    .result-title {
+        font-size: 18px !important;
+    }
+
+    .result-text {
+        font-size: 13px !important;
+        line-height: 1.4 !important;
+    }
+
+    .result-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+
+    .result-item {
+        padding: 9px !important;
+    }
+
+    .result-item strong {
+        font-size: 16px !important;
+    }
+}
+
+/* =========================
+   MyPage Log Pagination
+========================= */
+
+.log-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 14px;
+    margin-top: 16px;
+    padding: 14px;
+    border-radius: 16px;
+    background: rgba(0, 0, 0, 0.22);
+    border: 1px solid rgba(255, 215, 0, 0.18);
+}
+
+.log-pagination-info {
+    color: #fff7cd;
+    font-size: 14px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.log-pagination-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.log-pagination-buttons button {
+    width: auto;
+    min-width: 42px;
+    min-height: 36px;
+    margin: 0;
+    padding: 0 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 215, 0, 0.28);
+    background: rgba(0, 0, 0, 0.28);
+    color: #eafff6;
+    font-size: 13px;
+    font-weight: 900;
+    cursor: pointer;
+}
+
+.log-pagination-buttons button:hover:not(:disabled) {
+    transform: translateY(-1px);
+    background: rgba(255, 215, 0, 0.12);
+}
+
+.log-pagination-buttons button.active {
+    background: linear-gradient(135deg, #ffd000, #ff9f1c);
+    color: #1f1300;
+    border-color: rgba(255, 215, 0, 0.85);
+    box-shadow: 0 0 14px rgba(255, 215, 0, 0.24);
+}
+
+.log-pagination-buttons button:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+    transform: none;
+}
+
+@media (max-width: 768px) {
+    .log-pagination {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .log-pagination-info {
+        text-align: center;
+    }
+
+    .log-pagination-buttons {
+        justify-content: center;
+    }
+
+    .log-pagination-buttons button {
+        flex: 1 1 auto;
+        min-width: 58px;
+    }
+}
+
+/* =========================
+   MyPage Log Height Stabilizer
+   페이지네이션 높이 흔들림 방지
+========================= */
+
+/* 기록이 없을 때도 영역이 너무 작아지지 않게 */
+
+/* 모바일에서는 조금 줄이기 */
+
+@media (max-width: 768px) {
+    .log-table-wrap {
+        min-height: 500px;
+    }
+
+    .empty-log {
+        min-height: 180px;
+    }
+}
+
+@media (max-width: 430px) {
+    .log-table-wrap {
+        min-height: 480px;
+    }
+}
+
+/* =========================
+   Mobile Landscape Optimization V2
+   모바일 가로 화면 전용 최적화
+   기존 세로 모바일 UI는 유지하고, 가로 화면에서만 덮어쓰기
+========================= */
+
+@media (max-width: 1024px) and (orientation: landscape) {
+    html,
+    body,
+    #root {
+        width: 100%;
+        min-height: 100%;
+        overflow-x: hidden;
+    }
+
+    body {
+        font-size: 13px;
+    }
+
+    .game-page {
+        width: 100% !important;
+        max-width: 100vw !important;
+        margin: 0 auto !important;
+        padding: 6px 8px !important;
+        box-sizing: border-box !important;
+    }
+
+    .game-header {
+        margin-bottom: 6px !important;
+    }
+
+    .game-header h1 {
+        font-size: 22px !important;
+        margin: 0 0 2px !important;
+        line-height: 1.1 !important;
+    }
+
+    .game-header p {
+        font-size: 11px !important;
+        line-height: 1.25 !important;
+        margin: 0 !important;
+    }
+
+    .joker-round-banner {
+        width: 100% !important;
+        margin: 0 auto 6px !important;
+        padding: 7px 10px !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        text-align: left !important;
+        gap: 8px !important;
+        border-radius: 12px !important;
+        animation: none !important;
+    }
+
+    .joker-round-icon {
+        font-size: 24px !important;
+    }
+
+    .joker-round-text strong {
+        font-size: 14px !important;
+        margin-bottom: 2px !important;
+    }
+
+    .joker-round-text p {
+        font-size: 11px !important;
+        line-height: 1.25 !important;
+    }
+
+    .joker-round-rate {
+        width: 48px !important;
+        height: 48px !important;
+        min-width: 48px !important;
+        font-size: 16px !important;
+    }
+
+    .game-layout {
+        width: 100% !important;
+        display: grid !important;
+        grid-template-columns: minmax(0, 1fr) clamp(210px, 30vw, 260px) !important;
+        gap: 8px !important;
+        align-items: start !important;
+        box-sizing: border-box !important;
+    }
+
+    .game-main-panel,
+    .game-side-panel {
+        width: 100% !important;
+        padding: 8px !important;
+        border-radius: 14px !important;
+        box-sizing: border-box !important;
+    }
+
+    .game-main-panel {
+        order: unset !important;
+        min-width: 0 !important;
+    }
+
+    .game-side-panel {
+        order: unset !important;
+        max-height: calc(100vh - 18px) !important;
+        overflow-y: auto !important;
+        padding-right: 6px !important;
+        min-width: 0 !important;
+    }
+
+    .table-top {
+        padding: 7px 8px !important;
+        margin-bottom: 8px !important;
+        border-radius: 12px !important;
+    }
+
+    .table-top h2 {
+        font-size: 17px !important;
+        margin: 0 0 3px !important;
+        line-height: 1.15 !important;
+    }
+
+    .phase-text {
+        font-size: 11px !important;
+        line-height: 1.25 !important;
+    }
+
+    .card-area {
+        width: 100% !important;
+        min-height: clamp(116px, 34vh, 150px) !important;
+        padding: 10px 6px !important;
+        gap: clamp(5px, 1vw, 10px) !important;
+        flex-wrap: nowrap !important;
+        overflow: visible !important;
+        border-width: 2px !important;
+        border-radius: 14px !important;
+        box-sizing: border-box !important;
+    }
+
+    .card {
+        width: clamp(56px, 9.2vw, 72px) !important;
+        min-width: clamp(56px, 9.2vw, 72px) !important;
+        max-width: clamp(56px, 9.2vw, 72px) !important;
+        height: auto !important;
+        aspect-ratio: 68 / 100 !important;
+        flex: 0 0 auto !important;
+        border-width: 3px !important;
+        border-radius: 10px !important;
+    }
+
+    .card-face {
+        border-radius: 8px !important;
+    }
+
+    .corner-top-left {
+        top: 5px !important;
+        left: 5px !important;
+    }
+
+    .corner-bottom-right {
+        right: 5px !important;
+        bottom: 5px !important;
+    }
+
+    .corner-rank {
+        font-size: clamp(12px, 1.8vw, 15px) !important;
+    }
+
+    .corner-suit {
+        font-size: clamp(10px, 1.5vw, 12px) !important;
+        margin-top: 1px !important;
+    }
+
+    .card-pips {
+        inset: 18px 8px 18px 8px !important;
+    }
+
+    .card-pip {
+        font-size: clamp(12px, 1.8vw, 15px) !important;
+    }
+
+    .ace-suit {
+        font-size: clamp(30px, 5vw, 38px) !important;
+    }
+
+    .face-svg {
+        width: clamp(44px, 7vw, 54px) !important;
+        height: clamp(44px, 7vw, 54px) !important;
+    }
+
+    .joker-center {
+        font-size: clamp(24px, 4vw, 30px) !important;
+    }
+
+    .held-card,
+    .winning-card {
+        transform: translateY(-8px) scale(1.02) !important;
+    }
+
+    .hold-badge {
+        top: -9px !important;
+        padding: 2px 6px !important;
+        font-size: 8px !important;
+    }
+
+    .action-area {
+        margin-top: 8px !important;
+    }
+
+    button,
+    .action-area button,
+    .start-game-button,
+    .side-action-button,
+    .sound-toggle-button,
+    .support-card button {
+        min-height: 40px !important;
+        padding: 7px 9px !important;
+        font-size: 13px !important;
+        border-radius: 11px !important;
+        margin-top: 6px !important;
+    }
+
+    .button-row,
+    .mini-button-row,
+    .mini-choice-row {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        align-items: center !important;
+        gap: 7px !important;
+        flex-wrap: nowrap !important;
+    }
+
+    .button-row button,
+    .mini-button-row button,
+    .mini-choice-row button {
+        width: auto !important;
+        flex: 1 1 0 !important;
+        min-width: 0 !important;
+        max-width: none !important;
+        white-space: nowrap !important;
+    }
+
+    .side-card {
+        padding: 8px !important;
+        margin-bottom: 7px !important;
+        border-radius: 12px !important;
+    }
+
+    .side-card h3 {
+        font-size: 14px !important;
+        margin: 0 0 5px !important;
+        padding-bottom: 5px !important;
+    }
+
+    .side-card p {
+        font-size: 11px !important;
+        line-height: 1.3 !important;
+        margin: 4px 0 !important;
+        gap: 8px !important;
+    }
+
+    .side-card input {
+        width: 100% !important;
+        height: 38px !important;
+        font-size: 14px !important;
+        border-radius: 10px !important;
+        box-sizing: border-box !important;
+    }
+
+    .payout-list p {
+        font-size: 10.5px !important;
+        line-height: 1.2 !important;
+    }
+
+    .mini-box {
+        margin-top: 8px !important;
+        padding: 8px !important;
+        border-radius: 12px !important;
+    }
+
+    .mini-box h2 {
+        font-size: 16px !important;
+        line-height: 1.25 !important;
+        margin: 0 0 6px !important;
+    }
+
+    .mini-box h3 {
+        font-size: 14px !important;
+        margin: 6px 0 !important;
+    }
+
+    .mini-box p {
+        font-size: 11px !important;
+        line-height: 1.3 !important;
+        margin: 4px 0 !important;
+    }
+
+    .mini-card-area {
+        gap: 10px !important;
+        margin: 8px 0 !important;
+        align-items: flex-start !important;
+    }
+
+    .mini-card-area .card {
+        width: clamp(54px, 8vw, 64px) !important;
+        min-width: clamp(54px, 8vw, 64px) !important;
+        height: auto !important;
+        aspect-ratio: 68 / 100 !important;
+    }
+
+    .mini-card-label {
+        font-size: 10px !important;
+    }
+
+    .mini-choice-button {
+        width: auto !important;
+        min-height: 40px !important;
+        font-size: 13px !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    .result-box,
+    .result-card {
+        margin-top: 8px !important;
+        padding: 8px !important;
+        border-radius: 12px !important;
+    }
+
+    .result-title {
+        font-size: 17px !important;
+        margin-bottom: 6px !important;
+    }
+
+    .result-text {
+        font-size: 12px !important;
+        line-height: 1.35 !important;
+        margin-bottom: 8px !important;
+    }
+
+    .result-card-header strong {
+        font-size: 20px !important;
+    }
+
+    .result-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 7px !important;
+    }
+
+    .result-item {
+        padding: 8px !important;
+    }
+
+    .result-item strong {
+        font-size: 15px !important;
+    }
+
+    .mission-modal-backdrop {
+        padding: 8px !important;
+    }
+
+    .mission-modal {
+        width: 96vw !important;
+        height: 88vh !important;
+        max-height: 88vh !important;
+        padding: 12px !important;
+        border-radius: 16px !important;
+    }
+
+    .mission-modal-header {
+        margin-bottom: 8px !important;
+    }
+
+    .mission-modal-header h2 {
+        font-size: 20px !important;
+    }
+
+    .mission-tabs {
+        gap: 6px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .mission-tabs button,
+    .mission-close-button {
+        min-height: 36px !important;
+        padding: 7px 8px !important;
+        font-size: 12px !important;
+        border-radius: 10px !important;
+        margin: 0 !important;
+    }
+
+    .mission-message {
+        padding: 8px !important;
+        margin-bottom: 8px !important;
+        font-size: 12px !important;
+    }
+
+    .mission-item {
+        padding: 9px !important;
+        margin-bottom: 8px !important;
+        border-radius: 12px !important;
+    }
+
+    .mission-item-top {
+        flex-direction: row !important;
+        gap: 8px !important;
+        margin-bottom: 7px !important;
+    }
+
+    .achievement-bottom {
+        flex-direction: row !important;
+        align-items: center !important;
+    }
+
+    .achievement-bottom button {
+        width: auto !important;
+        min-width: 100px !important;
+    }
+
+    .mission-notice-toast {
+        top: 10px !important;
+        right: 10px !important;
+        left: auto !important;
+        width: min(300px, calc(100vw - 20px)) !important;
+        padding: 12px 14px !important;
+        border-radius: 14px !important;
+    }
+
+    .mission-notice-toast strong {
+        font-size: 16px !important;
+    }
+
+    .mission-notice-toast p {
+        font-size: 13px !important;
+    }
+
+    .mission-notice-toast span {
+        font-size: 11px !important;
+    }
+}
+
+/* 아주 낮은 높이의 가로 화면: 헤더와 배너를 더 줄여 게임판을 우선 표시 */
+@media (max-width: 1024px) and (orientation: landscape) and (max-height: 430px) {
+    .game-header p {
+        display: none !important;
+    }
+
+    .game-header h1 {
+        font-size: 20px !important;
+    }
+
+    .joker-round-banner {
+        padding: 6px 8px !important;
+    }
+
+    .joker-round-text p {
+        display: none !important;
+    }
+
+    .game-layout {
+        grid-template-columns: minmax(0, 1fr) clamp(200px, 28vw, 235px) !important;
+    }
+
+    .card-area {
+        min-height: 110px !important;
+        padding: 8px 5px !important;
+    }
+
+    .card {
+        width: clamp(52px, 8.4vw, 66px) !important;
+        min-width: clamp(52px, 8.4vw, 66px) !important;
+        max-width: clamp(52px, 8.4vw, 66px) !important;
+    }
+
+    .side-card.support-card,
+    .payout-list {
+        font-size: 10px !important;
+    }
+}
+
+/* =========================
+   Game / Mini Game Popup Modal
+   승리, 패배, 미니게임 결과를 화면 아래가 아닌 팝업으로 표시
+========================= */
+.game-popup-backdrop {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 8500 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 18px !important;
+    background: rgba(0, 0, 0, 0.72) !important;
+    backdrop-filter: blur(8px) !important;
+    box-sizing: border-box !important;
+}
+
+.game-popup-panel {
+    width: min(560px, 100%) !important;
+    max-height: min(680px, calc(100dvh - 28px)) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
+    border-radius: 24px !important;
+    background:
+            radial-gradient(circle at top, rgba(255, 215, 0, 0.16), transparent 42%),
+            linear-gradient(145deg, #062d22, #031a15) !important;
+    border: 2px solid rgba(255, 215, 0, 0.48) !important;
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.7) !important;
+    animation: gamePopupIn 0.22s ease-out both !important;
+}
+
+@keyframes gamePopupIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.game-popup-header {
+    flex: 0 0 auto !important;
+    padding: 22px 20px 18px !important;
+    text-align: center !important;
+    background: rgba(0, 0, 0, 0.26) !important;
+    border-bottom: 1px solid rgba(255, 215, 0, 0.18) !important;
+}
+
+.game-popup-header.win {
+    background:
+            radial-gradient(circle at center, rgba(255, 215, 0, 0.24), transparent 58%),
+            linear-gradient(145deg, rgba(11, 83, 60, 0.92), rgba(4, 35, 28, 0.96)) !important;
+}
+
+.game-popup-header.lose {
+    background:
+            radial-gradient(circle at center, rgba(255, 80, 80, 0.2), transparent 58%),
+            linear-gradient(145deg, rgba(69, 17, 17, 0.96), rgba(20, 6, 6, 0.98)) !important;
+}
+
+.game-popup-header.mini {
+    background:
+            radial-gradient(circle at center, rgba(168, 85, 247, 0.22), transparent 58%),
+            linear-gradient(145deg, rgba(52, 24, 84, 0.92), rgba(13, 8, 25, 0.96)) !important;
+}
+
+.game-popup-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-bottom: 8px !important;
+    padding: 5px 12px !important;
+    border-radius: 999px !important;
+    background: linear-gradient(135deg, #ffd000, #ff9f1c) !important;
+    color: #1f1300 !important;
+    font-size: 12px !important;
+    font-weight: 1000 !important;
+    letter-spacing: 1px !important;
+}
+
+.game-popup-header h2 {
+    margin: 0 !important;
+    color: #fff7cd !important;
+    font-size: 32px !important;
+    font-weight: 1000 !important;
+    line-height: 1.15 !important;
+}
+
+.game-popup-header p {
+    margin: 8px 0 0 !important;
+    color: #fffbe8 !important;
+    font-size: 15px !important;
+    font-weight: 800 !important;
+    line-height: 1.45 !important;
+}
+
+.game-popup-body {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    padding: 18px 18px 14px !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+}
+
+.game-popup-body.compact {
+    flex: 0 1 auto !important;
+}
+
+.popup-info-list {
+    display: grid !important;
+    gap: 10px !important;
+}
+
+.popup-info-list p,
+.popup-result-summary {
+    margin: 0 !important;
+    padding: 12px 14px !important;
+    border-radius: 14px !important;
+    background: rgba(0, 0, 0, 0.26) !important;
+    border: 1px solid rgba(255, 215, 0, 0.18) !important;
+    color: #fff8d6 !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    line-height: 1.45 !important;
+}
+
+.popup-current-reward,
+.popup-result-card {
+    margin: 14px auto 0 !important;
+    padding: 14px !important;
+    border-radius: 18px !important;
+    background: rgba(0, 0, 0, 0.28) !important;
+    border: 1px solid rgba(255, 215, 0, 0.24) !important;
+    color: #fff8d6 !important;
+}
+
+.popup-current-reward span,
+.popup-result-card span {
+    display: block !important;
+    margin-bottom: 4px !important;
+    color: #d8fce9 !important;
+    font-size: 13px !important;
+    font-weight: 900 !important;
+}
+
+.popup-current-reward strong,
+.popup-result-card strong {
+    display: block !important;
+    color: gold !important;
+    font-size: 30px !important;
+    font-weight: 1000 !important;
+}
+
+.popup-result-card.lose strong {
+    color: #ff8b8b !important;
+}
+
+.popup-result-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+    margin: 14px 0 !important;
+}
+
+.popup-result-grid div {
+    min-width: 0 !important;
+    padding: 11px 10px !important;
+    border-radius: 14px !important;
+    background: rgba(255, 255, 255, 0.07) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.popup-result-grid span {
+    display: block !important;
+    margin-bottom: 4px !important;
+    color: #cfeee0 !important;
+    font-size: 12px !important;
+    font-weight: 800 !important;
+}
+
+.popup-result-grid strong {
+    display: block !important;
+    color: #fff7cd !important;
+    font-size: 15px !important;
+    font-weight: 1000 !important;
+    word-break: keep-all !important;
+}
+
+.popup-mini-card-area {
+    justify-content: center !important;
+    margin: 0 !important;
+    padding: 4px 0 !important;
+}
+
+.game-popup-actions {
+    flex: 0 0 auto !important;
+    display: grid !important;
+    gap: 10px !important;
+    padding: 14px 18px 18px !important;
+    background: rgba(0, 0, 0, 0.34) !important;
+    border-top: 1px solid rgba(255, 215, 0, 0.18) !important;
+}
+
+.game-popup-actions.two-buttons {
+    grid-template-columns: 1fr 1fr !important;
+}
+
+.game-popup-actions.one-button {
+    grid-template-columns: 1fr !important;
+}
+
+.game-popup-actions button {
+    width: 100% !important;
+    min-height: 52px !important;
+    margin: 0 !important;
+    border-radius: 15px !important;
+    font-size: 16px !important;
+    font-weight: 1000 !important;
+    white-space: nowrap !important;
+}
+
+@media (max-width: 768px) {
+    .game-popup-backdrop {
+        align-items: center !important;
+        padding: 10px !important;
+    }
+
+    .game-popup-panel {
+        width: 100% !important;
+        max-height: calc(100dvh - 20px) !important;
+        border-radius: 20px !important;
+    }
+
+    .game-popup-header {
+        padding: 17px 14px 14px !important;
+    }
+
+    .game-popup-header h2 {
+        font-size: 25px !important;
+    }
+
+    .game-popup-header p {
+        font-size: 13px !important;
+    }
+
+    .game-popup-body {
+        padding: 13px !important;
+    }
+
+    .popup-mini-card-area .card {
+        width: 72px !important;
+        min-width: 72px !important;
+        height: 106px !important;
+    }
+
+    .popup-result-card strong,
+    .popup-current-reward strong {
+        font-size: 26px !important;
+    }
+
+    .popup-result-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 8px !important;
+    }
+
+    .game-popup-actions {
+        padding: 12px !important;
+    }
+
+    .game-popup-actions.two-buttons {
+        grid-template-columns: 1fr 1fr !important;
+    }
+
+    .game-popup-actions button {
+        min-height: 48px !important;
+        font-size: 14px !important;
+        padding: 10px 8px !important;
+    }
+}
+
+@media (max-width: 360px) {
+    .popup-result-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    .game-popup-actions.two-buttons {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 1024px) and (orientation: landscape) {
+    .game-popup-backdrop {
+        padding: 8px !important;
+    }
+
+    .game-popup-panel {
+        width: min(760px, 100%) !important;
+        max-height: calc(100dvh - 16px) !important;
+    }
+
+    .game-popup-header {
+        padding: 12px 16px 10px !important;
+    }
+
+    .game-popup-header h2 {
+        font-size: 22px !important;
+    }
+
+    .game-popup-header p {
+        font-size: 12px !important;
+    }
+
+    .game-popup-body {
+        padding: 10px 14px !important;
+    }
+
+    .popup-mini-card-area .card {
+        width: 58px !important;
+        min-width: 58px !important;
+        height: 86px !important;
+    }
+
+    .popup-result-card {
+        margin-top: 8px !important;
+        padding: 10px !important;
+    }
+
+    .popup-result-card strong {
+        font-size: 24px !important;
+    }
+
+    .popup-result-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important;
+        margin: 10px 0 !important;
+    }
+
+    .popup-result-grid div {
+        padding: 8px !important;
+    }
+
+    .popup-result-summary {
+        padding: 9px 10px !important;
+        font-size: 12px !important;
+    }
+
+    .game-popup-actions {
+        padding: 10px 14px !important;
+    }
+
+    .game-popup-actions button {
+        min-height: 42px !important;
+        font-size: 13px !important;
+    }
+}
+
+/* =========================
+   Mobile Face Card Fix
+   J / Q / K 그림 겹침 방지
+========================= */
+
+@media (max-width: 768px) {
+    .card .card-face {
+        overflow: hidden;
+    }
+
+    .card .card-corner {
+        z-index: 10;
+    }
+
+    .card .face-card-center {
+        inset: 22px 6px 22px 6px;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .card .face-card-banner {
+        display: none;
+    }
+
+    .card .face-svg {
+        width: clamp(34px, 10vw, 43px);
+        height: clamp(34px, 10vw, 43px);
+        top: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .card .corner-rank {
+        font-size: 12px;
+        line-height: 1;
+    }
+
+    .card .corner-suit {
+        font-size: 11px;
+        line-height: 1;
+        margin-top: 1px;
+    }
+}
+
+/* 더 작은 모바일 */
+@media (max-width: 430px) {
+    .card .face-card-center {
+        inset: 21px 5px 21px 5px;
+    }
+
+    .card .face-svg {
+        width: clamp(32px, 10.5vw, 40px);
+        height: clamp(32px, 10.5vw, 40px);
+    }
+
+    .card .corner-rank {
+        font-size: 11px;
+    }
+
+    .card .corner-suit {
+        font-size: 10px;
+    }
+}
+
+/* 미니게임 카드 쪽은 조금 더 크게 유지 */
+@media (max-width: 768px) {
+    .mini-card .face-card-center {
+        inset: 24px 8px 24px 8px;
+    }
+
+    .mini-card .face-svg {
+        width: 48px;
+        height: 48px;
+    }
+}
+
+/* =========================
+   Mobile Hold Motion + Volume Slider Fix
+   모바일 HOLD 카드 모션 / 볼륨 게이지바 수정
+========================= */
+
+/* HOLD 카드가 모바일에서도 확실히 위로 올라가게 */
+@media (max-width: 768px) {
+    .card-area {
+        overflow: visible !important;
+        padding-top: 34px !important;
+    }
+
+    .card.held-card {
+        transform: translateY(-18px) scale(1.045) !important;
+        z-index: 40 !important;
+        transition:
+                transform 0.22s ease,
+                box-shadow 0.22s ease,
+                border-color 0.22s ease !important;
+        animation: mobileHoldPop 0.24s ease-out both !important;
+        border-color: #ffd700 !important;
+        box-shadow:
+                0 0 0 3px rgba(255, 215, 0, 0.85),
+                0 0 18px rgba(255, 215, 0, 0.62),
+                0 16px 28px rgba(0, 0, 0, 0.55) !important;
+    }
+
+    .card.held-card .hold-badge {
+        top: -13px !important;
+        z-index: 50 !important;
+    }
+}
+
+/* 작은 모바일에서는 너무 많이 튀지 않게 살짝 조정 */
+@media (max-width: 430px) {
+    .card.held-card {
+        transform: translateY(-16px) scale(1.04) !important;
+    }
+
+    .card.held-card .hold-badge {
+        top: -12px !important;
+        font-size: 8px !important;
+        padding: 2px 7px !important;
+    }
+}
+
+/* 모바일 가로 화면에서는 높이가 작으니까 조금만 올림 */
+@media (max-width: 1024px) and (orientation: landscape) {
+    .card.held-card {
+        transform: translateY(-13px) scale(1.035) !important;
+    }
+
+    .card.held-card .hold-badge {
+        top: -10px !important;
+    }
+}
+
+@keyframes mobileHoldPop {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    60% {
+        transform: translateY(-22px) scale(1.07);
+    }
+
+    100% {
+        transform: translateY(-18px) scale(1.045);
+    }
+}
+
+/* =========================
+   Sound Volume Slider Fix
+========================= */
+
+.volume-control {
+    width: 100%;
+    max-width: 280px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 48px;
+    align-items: center;
+    gap: 12px;
+}
+
+.volume-control .volume-slider {
+    appearance: auto;
+    -webkit-appearance: auto;
+    width: 100%;
+    height: 8px;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    accent-color: gold;
+}
+
+.volume-control span {
+    min-width: 48px;
+    text-align: right;
+    color: gold;
+    font-size: 14px;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+    .settings-row .volume-control {
+        max-width: none;
+        width: 100%;
+        grid-template-columns: minmax(0, 1fr) 52px;
+    }
+}

@@ -1,0 +1,20 @@
+
+# IDE
+.idea/
+.idea
+
+# Environment variables
+.env
+.env.local
+backend/.env
+frontend/.env.local
+
+# dependencies
+node_modules/
+backend/node_modules/
+frontend/node_modules/
+
+# build
+dist/
+frontend/dist/
+backend/dist/
