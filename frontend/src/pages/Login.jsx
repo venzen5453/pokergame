@@ -64,6 +64,14 @@ function Login({ setPage, setUser }) {
             <button className="link-button" onClick={() => setPage("register")}>
                 계정이 없나요? 회원가입
             </button>
+
+            <button
+                type="button"
+                className="link-button"
+                onClick={() => setPage("forgotPassword")}
+            >
+                비밀번호를 잊으셨나요?
+            </button>
         </div>
     );
 }

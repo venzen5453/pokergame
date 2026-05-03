@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
+import ForgotPassword from "./pages/ForgotPassword.jsx";
 import MyPage from "./pages/MyPage.jsx";
 import Game from "./pages/Game.jsx";
 import Ranking from "./pages/Ranking.jsx";
 import { API_BASE_URL } from "./api";
 import "./style.css";
 
-const ALLOWED_PAGES = ["login", "register", "mypage", "game", "ranking"];
+const ALLOWED_PAGES = ["login", "register", "forgotPassword", "mypage", "game", "ranking"];
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -99,7 +100,7 @@ function App() {
       setPage("mypage");
     }
 
-    if (!user && page !== "register") {
+    if (!user && page !== "register" && page !== "forgotPassword") {
       setPage("login");
     }
   }, [user]);
@@ -128,7 +129,11 @@ function App() {
     };
   }, [user?.id]);
 
-  if (!user && page !== "register") {
+  if (page === "forgotPassword") {
+    return <ForgotPassword setPage={setPage} />;
+  }
+
+  if (!user && page !== "register" && page !== "forgotPassword") {
     return <Login setPage={setPage} setUser={setUser} />;
   }
 

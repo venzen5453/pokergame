@@ -92,6 +92,72 @@ router.post("/login", (req, res) => {
     });
 });
 
+router.post("/reset-password", async (req, res) => {
+    const { username, email, newPassword } = req.body;
+
+    if (!username || !email || !newPassword) {
+        return res.status(400).json({
+            message: "아이디, 이메일, 새 비밀번호를 모두 입력해주세요."
+        });
+    }
+
+    if (newPassword.length < 4) {
+        return res.status(400).json({
+            message: "새 비밀번호는 4자 이상 입력해주세요."
+        });
+    }
+
+    const findSql = `
+        SELECT id
+        FROM users
+        WHERE username = ? AND email = ?
+    `;
+
+    db.query(findSql, [username, email], async (err, results) => {
+        if (err) {
+            console.error("비밀번호 재설정 유저 조회 실패:", err);
+            return res.status(500).json({
+                message: "서버 오류가 발생했습니다."
+            });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({
+                message: "아이디 또는 이메일이 일치하지 않습니다."
+            });
+        }
+
+        try {
+            const user = results[0];
+            const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+            const updateSql = `
+                UPDATE users
+                SET password = ?
+                WHERE id = ?
+            `;
+
+            db.query(updateSql, [hashedPassword, user.id], (updateErr) => {
+                if (updateErr) {
+                    console.error("비밀번호 변경 실패:", updateErr);
+                    return res.status(500).json({
+                        message: "비밀번호 변경 실패"
+                    });
+                }
+
+                res.json({
+                    message: "비밀번호가 성공적으로 변경되었습니다. 새 비밀번호로 로그인해주세요."
+                });
+            });
+        } catch (error) {
+            console.error("비밀번호 암호화 실패:", error);
+            res.status(500).json({
+                message: "서버 오류가 발생했습니다."
+            });
+        }
+    });
+});
+
 router.put("/update-user", (req, res) => {
     const { id, coin, jackpot, win, lose_count } = req.body;
 
