@@ -680,7 +680,62 @@ function GameRuleModal({ isOpen, onClose }) {
     );
 }
 
+const GAME_SAVE_VERSION = 1;
+
+function getGameSaveKey(userId) {
+    return `pokerGameState:${userId}`;
+}
+
+function loadSavedGameState(userId) {
+    if (!userId) return null;
+
+    try {
+        const saved = localStorage.getItem(getGameSaveKey(userId));
+        if (!saved) return null;
+
+        const parsed = JSON.parse(saved);
+
+        if (parsed.version !== GAME_SAVE_VERSION) {
+            localStorage.removeItem(getGameSaveKey(userId));
+            return null;
+        }
+
+        // 모바일 새로고침으로 애니메이션 도중 복구될 때 안전한 단계로 바꿔줌
+        if (parsed.phase === "dealing") {
+            parsed.phase = "draw";
+            parsed.dealtCount = 5;
+            parsed.revealedCards = [0, 1, 2, 3, 4];
+        }
+
+        if (parsed.phase === "exchanging") {
+            parsed.phase = "draw";
+            parsed.exchangingCards = [];
+            parsed.incomingCards = [];
+            parsed.revealedCards = [0, 1, 2, 3, 4];
+        }
+
+        if (parsed.phase === "miniRevealing") {
+            parsed.phase = "miniGame";
+            parsed.miniLeftRevealed = false;
+            parsed.miniMessage = "왼쪽 카드가 오른쪽 카드보다 높을까요? 낮을까요?";
+        }
+
+        return parsed;
+    } catch (error) {
+        console.error("게임 상태 복구 실패:", error);
+        localStorage.removeItem(getGameSaveKey(userId));
+        return null;
+    }
+}
+
+function clearSavedGameState(userId) {
+    if (!userId) return;
+    localStorage.removeItem(getGameSaveKey(userId));
+}
+
 function Game({ user, setUser, setPage }) {
+
+    const savedGameState = loadSavedGameState(user?.id)
 
     const getPipPositions = (rank) => {
         const layouts = {
@@ -1037,26 +1092,24 @@ function Game({ user, setUser, setPage }) {
         }
     };
 
-    const [deck, setDeck] = useState([]);
-    const [hand, setHand] = useState([]);
-    const [heldCards, setHeldCards] = useState([]);
-    const [dealtCount, setDealtCount] = useState(0);
-    const [revealedCards, setRevealedCards] = useState([]);
-    const [phase, setPhase] = useState("ready");
-    const [exchangingCards, setExchangingCards] = useState([]);
-    const [incomingCards, setIncomingCards] = useState([]);
-    const [winningCards, setWinningCards] = useState([]);
+    const [deck, setDeck] = useState(savedGameState?.deck ?? []);
+    const [hand, setHand] = useState(savedGameState?.hand ?? []);
+    const [heldCards, setHeldCards] = useState(savedGameState?.heldCards ?? []);
+    const [dealtCount, setDealtCount] = useState(savedGameState?.dealtCount ?? 0);
+    const [revealedCards, setRevealedCards] = useState(savedGameState?.revealedCards ?? []);
+    const [phase, setPhase] = useState(savedGameState?.phase ?? "ready");
+    const [exchangingCards, setExchangingCards] = useState(savedGameState?.exchangingCards ?? []);
+    const [incomingCards, setIncomingCards] = useState(savedGameState?.incomingCards ?? []);
+    const [winningCards, setWinningCards] = useState(savedGameState?.winningCards ?? []);
 
-    const [result, setResult] = useState("");
-    const [bet, setBet] = useState(10);
+    const [result, setResult] = useState(savedGameState?.result ?? "");
+    const [bet, setBet] = useState(savedGameState?.bet ?? 10);
 
 
     useEffect(() => {
         refreshUserData();
     }, [user?.id]);
 
-
-    const [jackpot, setJackpot] = useState(user?.jackpot ?? 0);
 
     const refreshUserData = async () => {
         if (!user?.id) return;
@@ -1083,18 +1136,20 @@ function Game({ user, setUser, setPage }) {
         }
     };
 
-    const [baseReward, setBaseReward] = useState(0);
+    const [jackpot, setJackpot] = useState(savedGameState?.jackpot ?? user?.jackpot ?? 0);
 
-    const [currentReward, setCurrentReward] = useState(0);
-    const [lastHandName, setLastHandName] = useState("");
-    const [resultDetail, setResultDetail] = useState(null);
+    const [baseReward, setBaseReward] = useState(savedGameState?.baseReward ?? 0);
 
-    const [miniLeftCard, setMiniLeftCard] = useState(null);
-    const [miniRightCard, setMiniRightCard] = useState(null);
-    const [miniMessage, setMiniMessage] = useState("");
-    const [usedMiniGame, setUsedMiniGame] = useState(false);
-    const [miniLeftRevealed, setMiniLeftRevealed] = useState(false);
-    const [miniSelectedGuess, setMiniSelectedGuess] = useState("");
+    const [currentReward, setCurrentReward] = useState(savedGameState?.currentReward ?? 0);
+    const [lastHandName, setLastHandName] = useState(savedGameState?.lastHandName ?? "");
+    const [resultDetail, setResultDetail] = useState(savedGameState?.resultDetail ?? null);
+
+    const [miniLeftCard, setMiniLeftCard] = useState(savedGameState?.miniLeftCard ?? null);
+    const [miniRightCard, setMiniRightCard] = useState(savedGameState?.miniRightCard ?? null);
+    const [miniMessage, setMiniMessage] = useState(savedGameState?.miniMessage ?? "");
+    const [usedMiniGame, setUsedMiniGame] = useState(savedGameState?.usedMiniGame ?? false);
+    const [miniLeftRevealed, setMiniLeftRevealed] = useState(savedGameState?.miniLeftRevealed ?? false);
+    const [miniSelectedGuess, setMiniSelectedGuess] = useState(savedGameState?.miniSelectedGuess ?? "");
 
     const [showMissionModal, setShowMissionModal] = useState(false);
     const [showSettingsModal, setShowSettingsModal] = useState(false);
@@ -1136,6 +1191,72 @@ function Game({ user, setUser, setPage }) {
         localStorage.setItem("pokerCardDesign", cardDesign);
     }, [cardDesign]);
 
+    useEffect(() => {
+        if (!user?.id) return;
+
+        // ready 상태면 진행 중인 게임이 없는 상태라 저장 삭제
+        if (phase === "ready") {
+            clearSavedGameState(user.id);
+            return;
+        }
+
+        const gameState = {
+            version: GAME_SAVE_VERSION,
+            savedAt: Date.now(),
+
+            deck,
+            hand,
+            heldCards,
+            dealtCount,
+            revealedCards,
+            phase,
+            exchangingCards,
+            incomingCards,
+            winningCards,
+
+            result,
+            bet,
+            jackpot,
+            baseReward,
+            currentReward,
+            lastHandName,
+            resultDetail,
+
+            miniLeftCard,
+            miniRightCard,
+            miniMessage,
+            usedMiniGame,
+            miniLeftRevealed,
+            miniSelectedGuess
+        };
+
+        localStorage.setItem(getGameSaveKey(user.id), JSON.stringify(gameState));
+    }, [
+        user?.id,
+        deck,
+        hand,
+        heldCards,
+        dealtCount,
+        revealedCards,
+        phase,
+        exchangingCards,
+        incomingCards,
+        winningCards,
+        result,
+        bet,
+        jackpot,
+        baseReward,
+        currentReward,
+        lastHandName,
+        resultDetail,
+        miniLeftCard,
+        miniRightCard,
+        miniMessage,
+        usedMiniGame,
+        miniLeftRevealed,
+        miniSelectedGuess
+    ]);
+
     const playGameSound = (type) => {
         if (!soundEnabled) return;
         playSound(type, soundVolume);
@@ -1144,7 +1265,9 @@ function Game({ user, setUser, setPage }) {
     const [jokerOverlay, setJokerOverlay] = useState(null);
 
     const handleLogout = () => {
+        clearSavedGameState(user?.id);
         localStorage.removeItem("pokerUser");
+        localStorage.setItem("pokerPage", "login");
         setUser(null);
         setPage("login");
     };
@@ -2132,7 +2255,12 @@ function Game({ user, setUser, setPage }) {
                         미션
                     </button>
 
-                    <button onClick={() => setPage("mypage")}>
+                    <button
+                        onClick={() => {
+                            localStorage.setItem("pokerPage", "mypage");
+                            setPage("mypage");
+                        }}
+                    >
                         마이페이지
                     </button>
 
