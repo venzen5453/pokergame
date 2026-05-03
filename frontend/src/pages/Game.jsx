@@ -50,6 +50,9 @@ const handPower = {
     "파이브 카드": 10
 };
 
+// 잭팟 적립률: 보상/배당금의 10%를 다음 잭팟으로 적립
+const JACKPOT_SAVE_RATE = 0.10;
+
 function createDeck(includeJoker = true) {
     const deck = [];
 
@@ -640,7 +643,7 @@ function GameRuleModal({ isOpen, onClose }) {
                         <ul>
                             <li>투페어 이상이면 미니게임에 도전할 수 있습니다.</li>
                             <li>왼쪽 카드가 오른쪽 카드보다 높은지 낮은지 맞히는 게임입니다.</li>
-                            <li>성공하면 현재 보상이 2배가 됩니다.</li>
+                            <li>성공하면 연승 수에 따라 1연승 x2, 2연승 x3, 3연승 x4처럼 보상이 증가합니다.</li>
                             <li>실패하면 보상은 0P가 됩니다.</li>
                             <li>성공 후에는 계속 도전하거나 보상을 받을 수 있습니다.</li>
                         </ul>
@@ -649,10 +652,10 @@ function GameRuleModal({ isOpen, onClose }) {
                     <section className="rule-section">
                         <h3>잭팟</h3>
                         <ul>
-                            <li>일반 승리 또는 미니게임 포기 시 최종 보상의 1%가 잭팟에 적립됩니다.</li>
-                            <li>나머지 99%가 플레이어에게 지급됩니다.</li>
-                            <li>풀하우스 이상이면 현재 잭팟이 보상에 더해진 상태로 미니게임에 진입합니다.</li>
-                            <li>잭팟 수령 판에서는 잭팟이 추가로 적립되지 않습니다.</li>
+                            <li>일반 승리 또는 보상 수령 시 최종 보상의 10%가 잭팟에 적립됩니다.</li>
+                            <li>나머지 90%가 플레이어에게 지급됩니다.</li>
+                            <li>풀하우스 이상이면 현재 잭팟이 보상에 더해지고, 배당금의 10%는 실패 대비용으로 먼저 다음 잭팟에 적립됩니다.</li>
+                            <li>미니게임에서 이겨 보상이 커진 경우에도 수령 시 10%가 다음 잭팟으로 적립됩니다.</li>
                         </ul>
                     </section>
 
@@ -1144,6 +1147,11 @@ function Game({ user, setUser, setPage }) {
     const [lastHandName, setLastHandName] = useState(savedGameState?.lastHandName ?? "");
     const [resultDetail, setResultDetail] = useState(savedGameState?.resultDetail ?? null);
 
+    // 잭팟/미니게임 보상 계산용 상태
+    const [jackpotBonus, setJackpotBonus] = useState(savedGameState?.jackpotBonus ?? 0);
+    const [miniRewardOrigin, setMiniRewardOrigin] = useState(savedGameState?.miniRewardOrigin ?? 0);
+    const [miniWinStreak, setMiniWinStreak] = useState(savedGameState?.miniWinStreak ?? 0);
+
     const [miniLeftCard, setMiniLeftCard] = useState(savedGameState?.miniLeftCard ?? null);
     const [miniRightCard, setMiniRightCard] = useState(savedGameState?.miniRightCard ?? null);
     const [miniMessage, setMiniMessage] = useState(savedGameState?.miniMessage ?? "");
@@ -1221,6 +1229,9 @@ function Game({ user, setUser, setPage }) {
             currentReward,
             lastHandName,
             resultDetail,
+            jackpotBonus,
+            miniRewardOrigin,
+            miniWinStreak,
 
             miniLeftCard,
             miniRightCard,
@@ -1249,6 +1260,9 @@ function Game({ user, setUser, setPage }) {
         currentReward,
         lastHandName,
         resultDetail,
+        jackpotBonus,
+        miniRewardOrigin,
+        miniWinStreak,
         miniLeftCard,
         miniRightCard,
         miniMessage,
@@ -1567,6 +1581,9 @@ function Game({ user, setUser, setPage }) {
         setCurrentReward(0);
         setLastHandName("");
         setResultDetail(null);
+        setJackpotBonus(0);
+        setMiniRewardOrigin(0);
+        setMiniWinStreak(0);
         setMiniLeftCard(null);
         setMiniRightCard(null);
         setMiniMessage("");
@@ -1623,16 +1640,27 @@ function Game({ user, setUser, setPage }) {
         const isMiniGameTarget = handPower[handName] >= handPower["투페어"];
         const isJackpotHand = handPower[handName] >= handPower["풀하우스"];
 
-        const jackpotBonus = isJackpotHand ? formatPoint(jackpot) : 0;
-        const rewardBeforeFee = isJackpotHand
-            ? formatPoint(rawReward + jackpotBonus)
-            : rawReward;
+        const jackpotBonusValue = isJackpotHand ? formatPoint(jackpot) : 0;
 
-        const jackpotAfterHit = isJackpotHand ? 0 : jackpot;
+        // 잭팟 판은 잭팟 금액을 현재 보상에 섞지 않는다.
+        // 기본 배당만 미니게임 대상이 되고, 잭팟은 미니게임 연승 수에 따라 별도로 지급한다.
+        // 예: 잭팟 1000P, 미니게임 3연승 후 실패 -> 잭팟 1000P x 3 지급
+        const rewardBeforeFee = rawReward;
+
+        // 잭팟이 터진 판은 기본 배당의 10%를 다음 잭팟으로 먼저 적립한다.
+        // 미니게임에서 실패해도 다음 잭팟이 0으로 완전히 비지 않게 하는 안전장치.
+        const jackpotSafetyFee = isJackpotHand
+            ? formatPoint(rawReward * JACKPOT_SAVE_RATE)
+            : 0;
+
+        const rewardAfterSafetyFee = rawReward;
+        const jackpotAfterHit = isJackpotHand ? jackpotSafetyFee : jackpot;
 
         setBaseReward(rawReward);
-
-        setCurrentReward(rewardBeforeFee);
+        setCurrentReward(rewardAfterSafetyFee);
+        setMiniRewardOrigin(rewardAfterSafetyFee);
+        setMiniWinStreak(0);
+        setJackpotBonus(jackpotBonusValue);
         setLastHandName(handName);
         setUsedMiniGame(false);
 
@@ -1659,11 +1687,11 @@ function Game({ user, setUser, setPage }) {
 
             if (isJackpotHand) {
                 setResult(
-                    `${handName}! 기본 배당 ${rawReward}포인트 + 잭팟 ${jackpotBonus}포인트 = 현재 획득 예정 ${rewardBeforeFee}포인트`
+                    `${handName}! 기본 배당 ${rawReward}P / 잭팟 대상 ${jackpotBonusValue}P / 다음 잭팟 안전 적립 ${jackpotSafetyFee}P / 현재 기본 획득 예정 ${rewardAfterSafetyFee}P`
                 );
             } else {
                 setResult(
-                    `${handName}! 기본 배당 ${rawReward}포인트 / 현재 획득 예정 ${rewardBeforeFee}포인트`
+                    `${handName}! 기본 배당 ${rawReward}P / 현재 획득 예정 ${rewardAfterSafetyFee}P`
                 );
             }
 
@@ -1671,7 +1699,8 @@ function Game({ user, setUser, setPage }) {
             return;
         }
 
-        const fee = formatPoint(rewardBeforeFee * 0.01);
+        // 미니게임이 없는 낮은 족보는 최종 보상의 10%를 잭팟에 적립한다.
+        const fee = formatPoint(rewardBeforeFee * JACKPOT_SAVE_RATE);
         const netReward = formatPoint(rewardBeforeFee - fee);
         const updatedJackpot = formatPoint(jackpot + fee);
         const isWin = netReward > 0;
@@ -1715,11 +1744,13 @@ function Game({ user, setUser, setPage }) {
             finalReward: netReward,
             usedMiniGame: false,
             miniResult: "none",
-            jackpotUsed: false
+            jackpotUsed: false,
+            jackpotBonus: 0,
+            miniWinStreak: 0
         });
 
         setResult(
-            `${handName}! 기본 배당 ${rawReward}포인트 / 잭팟 적립 ${fee}포인트 / 실제 획득 ${netReward}포인트`
+            `${handName}! 기본 배당 ${rawReward}P / 잭팟 적립 ${fee}P / 실제 획득 ${netReward}P`
         );
 
         setPhase("result");
@@ -1780,21 +1811,25 @@ function Game({ user, setUser, setPage }) {
 
     const takeReward = () => {
         const isJackpotHand = handPower[lastHandName] >= handPower["풀하우스"];
-        const jackpotUsedValue = isJackpotHand && usedMiniGame;
 
-        let finalReward = currentReward;
-        let fee = 0;
-        let updatedJackpot = jackpot;
+        // 잭팟은 기본 배당과 분리해서 계산한다.
+        // 미니게임을 안 하고 바로 받으면 x1, 미니게임을 n연승하고 받으면 xN.
+        const jackpotMultiplier = isJackpotHand
+            ? (usedMiniGame ? miniWinStreak : 1)
+            : 0;
 
-        if (isJackpotHand && usedMiniGame) {
-            finalReward = formatPoint(currentReward);
-            fee = 0;
-            updatedJackpot = 0;
-        } else {
-            fee = formatPoint(currentReward * 0.01);
-            finalReward = formatPoint(currentReward - fee);
-            updatedJackpot = formatPoint(jackpot + fee);
-        }
+        const jackpotPayout = isJackpotHand
+            ? formatPoint(Number(jackpotBonus) * jackpotMultiplier)
+            : 0;
+
+        const jackpotUsedValue = isJackpotHand && jackpotPayout > 0;
+
+        // 기본 배당은 10%를 다음 잭팟에 적립한다.
+        // 미니게임 연승으로 기본 배당이 커졌다면, 커진 기본 배당 기준으로 잭팟 적립도 커진다.
+        const fee = formatPoint(currentReward * JACKPOT_SAVE_RATE);
+        const netBaseReward = formatPoint(currentReward - fee);
+        const finalReward = formatPoint(netBaseReward + jackpotPayout);
+        const updatedJackpot = formatPoint(jackpot + fee);
 
         if (jackpotUsedValue) {
             playGameSound("jackpot");
@@ -1805,7 +1840,6 @@ function Game({ user, setUser, setPage }) {
         const isWin = finalReward > 0;
 
         setJackpot(updatedJackpot);
-
         setCurrentReward(finalReward);
 
         const updatedUser = {
@@ -1824,7 +1858,7 @@ function Game({ user, setUser, setPage }) {
             jackpotFeeValue: fee,
             finalReward: finalReward,
             usedMiniGameValue: usedMiniGame,
-            miniResult: usedMiniGame ? "success" : "none",
+            miniResult: usedMiniGame ? `success_${miniWinStreak}` : "none",
             jackpotUsedValue: jackpotUsedValue,
             finalCardsValue: hand
         });
@@ -1837,19 +1871,28 @@ function Game({ user, setUser, setPage }) {
             finalReward: finalReward,
             usedMiniGame: usedMiniGame,
             miniResult: usedMiniGame ? "success" : "none",
-            jackpotUsed: jackpotUsedValue
+            jackpotUsed: jackpotUsedValue,
+            jackpotBonus: jackpotBonus,
+            miniWinStreak: miniWinStreak
         });
 
-        if (isJackpotHand && usedMiniGame) {
+        if (jackpotUsedValue) {
             setResult(
-                `${lastHandName}! 잭팟 포함 보상 ${finalReward}포인트를 받았습니다.`
+                `${lastHandName}! 기본 보상 ${netBaseReward}P + 잭팟 ${jackpotBonus}P x${jackpotMultiplier} = ${jackpotPayout}P / 잭팟 적립 ${fee}P / 실제 획득 ${finalReward}P를 받았습니다.`
+            );
+        } else if (usedMiniGame) {
+            setResult(
+                `${lastHandName}! 미니게임 ${miniWinStreak}연승 기본 보상에서 ${fee}P를 잭팟으로 적립하고 ${finalReward}P를 받았습니다.`
             );
         } else {
             setResult(
-                `${lastHandName}! 잭팟 적립 ${fee}포인트 / 실제 획득 ${finalReward}포인트를 받았습니다.`
+                `${lastHandName}! 잭팟 적립 ${fee}P / 실제 획득 ${finalReward}P를 받았습니다.`
             );
         }
 
+        setMiniRewardOrigin(0);
+        setMiniWinStreak(0);
+        setJackpotBonus(0);
         setPhase("result");
     };
 
@@ -1893,15 +1936,35 @@ function Game({ user, setUser, setPage }) {
             if (isCorrect) {
                 playGameSound("win");
 
-                const doubledReward = formatPoint(currentReward * 2);
-                setCurrentReward(doubledReward);
-                setMiniMessage(`성공! 현재 획득 예정 금액이 ${doubledReward}포인트가 되었습니다.`);
+                const nextStreak = miniWinStreak + 1;
+                const streakMultiplier = nextStreak + 1;
+                const originReward = Number(miniRewardOrigin || currentReward);
+                const streakReward = formatPoint(originReward * streakMultiplier);
+
+                setMiniWinStreak(nextStreak);
+                setCurrentReward(streakReward);
+                setMiniMessage(
+                    `성공! ${nextStreak}연승으로 x${streakMultiplier} 배율이 적용되어 현재 획득 예정 금액이 ${streakReward}포인트가 되었습니다.`
+                );
                 setPhase("miniSuccess");
             } else {
                 playGameSound("fail");
 
+                const isJackpotHand = handPower[lastHandName] >= handPower["풀하우스"];
+                const jackpotPayout = isJackpotHand
+                    ? formatPoint(Number(jackpotBonus) * miniWinStreak)
+                    : 0;
+
                 setCurrentReward(0);
-                setMiniMessage("실패! 미니게임 보상을 모두 잃었습니다.");
+
+                if (isJackpotHand && miniWinStreak > 0) {
+                    setMiniMessage(
+                        `실패! 기본 배당은 잃었지만, ${miniWinStreak}연승까지 인정되어 잭팟 ${jackpotBonus}P x${miniWinStreak} = ${jackpotPayout}P를 받을 수 있습니다.`
+                    );
+                } else {
+                    setMiniMessage("실패! 미니게임 보상을 모두 잃었습니다.");
+                }
+
                 setPhase("miniFail");
             }
         }, 750);
@@ -1912,11 +1975,26 @@ function Game({ user, setUser, setPage }) {
     };
 
     const finishAfterFail = () => {
+        const isJackpotHand = handPower[lastHandName] >= handPower["풀하우스"];
+
+        // 미니게임 실패 시 기본 배당은 0P.
+        // 단, 잭팟 판이면 실패 직전까지 이긴 연승 수만큼 잭팟을 지급한다.
+        // 예: 잭팟 1000P, 3연승 후 4판에서 실패 -> 1000P x 3 지급
+        const jackpotMultiplier = isJackpotHand ? miniWinStreak : 0;
+        const jackpotPayout = isJackpotHand
+            ? formatPoint(Number(jackpotBonus) * jackpotMultiplier)
+            : 0;
+
+        const finalReward = jackpotPayout;
+        const jackpotUsedValue = isJackpotHand && jackpotPayout > 0;
+        const isWin = finalReward > 0;
+
         const updatedUser = {
             ...user,
+            coin: formatPoint(user.coin + finalReward),
             jackpot: jackpot,
-            win: user.win ?? 0,
-            lose_count: (user.lose_count ?? 0) + 1
+            win: isWin ? (user.win ?? 0) + 1 : (user.win ?? 0),
+            lose_count: isWin ? (user.lose_count ?? 0) : (user.lose_count ?? 0) + 1
         };
 
         setUser(updatedUser);
@@ -1926,10 +2004,10 @@ function Game({ user, setUser, setPage }) {
             handNameValue: lastHandName,
             baseRewardValue: baseReward,
             jackpotFeeValue: 0,
-            finalReward: 0,
+            finalReward: finalReward,
             usedMiniGameValue: true,
-            miniResult: "fail",
-            jackpotUsedValue: handPower[lastHandName] >= handPower["풀하우스"],
+            miniResult: `fail_after_${miniWinStreak}`,
+            jackpotUsedValue: jackpotUsedValue,
             finalCardsValue: hand
         });
 
@@ -1938,18 +2016,29 @@ function Game({ user, setUser, setPage }) {
             bet: Number(bet),
             baseReward: baseReward,
             jackpotFee: 0,
-            finalReward: 0,
+            finalReward: finalReward,
             usedMiniGame: true,
             miniResult: "fail",
-            jackpotUsed: handPower[lastHandName] >= handPower["풀하우스"]
+            jackpotUsed: jackpotUsedValue,
+            jackpotBonus: jackpotBonus,
+            miniWinStreak: miniWinStreak
         });
 
-        setResult("미니게임 실패로 획득 금액은 0포인트입니다.");
-        setCurrentReward(0);
+        if (jackpotUsedValue) {
+            setResult(
+                `미니게임 실패! 기본 배당은 0P입니다. 하지만 잭팟은 ${miniWinStreak}연승까지 인정되어 ${jackpotBonus}P x${miniWinStreak} = ${finalReward}P를 받았습니다.`
+            );
+        } else {
+            setResult("미니게임 실패로 획득 금액은 0P입니다.");
+        }
+
+        setCurrentReward(finalReward);
+        setMiniRewardOrigin(0);
+        setMiniWinStreak(0);
+        setJackpotBonus(0);
 
         setPhase("result");
     };
-
 
     const isGamePopupOpen = [
         "miniChoice",
@@ -1972,7 +2061,7 @@ function Game({ user, setUser, setPage }) {
 
                     <div className="game-popup-body compact">
                         <div className="popup-info-list">
-                            <p>성공하면 현재 획득 예정 금액이 <strong>2배</strong>가 됩니다.</p>
+                            <p>성공할 때마다 기본 배당이 커지고, 잭팟 판은 성공한 연승 수만큼 잭팟 배율이 올라갑니다.</p>
                             <p>실패하면 획득 예정 금액은 <strong>0P</strong>가 됩니다.</p>
                         </div>
                     </div>
