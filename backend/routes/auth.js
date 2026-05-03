@@ -17,11 +17,11 @@ router.post("/register", async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const sql = `
-            INSERT INTO users (username, email, password)
-            VALUES (?, ?, ?)
+            INSERT INTO users (username, email, password, coin)
+            VALUES (?, ?, ?, ?)
         `;
 
-        db.query(sql, [username, email, hashedPassword], (err) => {
+        db.query(sql, [username, email, hashedPassword, 3000], (err) => {
             if (err) {
                 console.error(err);
                 return res.status(400).json({
