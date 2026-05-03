@@ -65,6 +65,32 @@ async function getCount(sql, params) {
     return Number(rows[0].count ?? 0);
 }
 
+async function getMiniSuccessCountBySql(whereSql, params) {
+    const [rows] = await dbPromise.query(
+        `
+        SELECT COALESCE(SUM(
+            CASE
+                WHEN mini_result LIKE 'success_%'
+                    THEN CAST(SUBSTRING_INDEX(mini_result, '_', -1) AS UNSIGNED)
+
+                WHEN mini_result LIKE 'fail_after_%'
+                    THEN CAST(REPLACE(mini_result, 'fail_after_', '') AS UNSIGNED)
+
+                WHEN mini_result = 'success'
+                    THEN 1
+
+                ELSE 0
+            END
+        ), 0) AS count
+        FROM game_logs
+        WHERE ${whereSql}
+        `,
+        params
+    );
+
+    return Number(rows[0].count ?? 0);
+}
+
 function makeMission(key, title, progress, target) {
     return {
         key,
@@ -167,14 +193,13 @@ async function getMissionData(userId) {
             [userId]
         ),
 
-        getCount(
-            `SELECT COUNT(*) AS count
-             FROM game_logs
-             WHERE user_id = ?
-             AND mini_result = 'success'
-             AND YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1)`,
-            [userId]
-        ),
+        getMiniSuccessCountBySql(
+    `
+    user_id = ?
+    AND YEARWEEK(created_at, 1) = YEARWEEK(CURDATE(), 1)
+    `,
+    [userId]
+),
 
         getCount(
             `SELECT COUNT(*) AS count
@@ -248,13 +273,12 @@ async function getMissionData(userId) {
             [userId]
         ),
 
-        getCount(
-            `SELECT COUNT(*) AS count
-             FROM game_logs
-             WHERE user_id = ?
-             AND mini_result = 'success'`,
-            [userId]
-        ),
+        getMiniSuccessCountBySql(
+    `
+    user_id = ?
+    `,
+    [userId]
+),
 
         getCount(
             `SELECT COUNT(*) AS count
