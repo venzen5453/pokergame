@@ -37,6 +37,10 @@ function App() {
   });
 
   const logout = () => {
+    if (user?.id) {
+      localStorage.removeItem(`pokerGameState:${user.id}`);
+    }
+
     localStorage.removeItem("pokerUser");
     localStorage.setItem("pokerPage", "login");
 
