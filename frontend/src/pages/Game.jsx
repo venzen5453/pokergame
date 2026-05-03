@@ -643,7 +643,7 @@ function GameRuleModal({ isOpen, onClose }) {
                         <ul>
                             <li>투페어 이상이면 미니게임에 도전할 수 있습니다.</li>
                             <li>왼쪽 카드가 오른쪽 카드보다 높은지 낮은지 맞히는 게임입니다.</li>
-                            <li>성공하면 연승 수에 따라 1연승 x2, 2연승 x3, 3연승 x4처럼 보상이 증가합니다.</li>
+                            <li>성공하면 기본 보상이 계속 2배씩 증가합니다. 예: 1연승 x2, 2연승 x4, 3연승 x8</li>
                             <li>실패하면 보상은 0P가 됩니다.</li>
                             <li>성공 후에는 계속 도전하거나 보상을 받을 수 있습니다.</li>
                         </ul>
@@ -654,8 +654,8 @@ function GameRuleModal({ isOpen, onClose }) {
                         <ul>
                             <li>일반 승리 또는 보상 수령 시 최종 보상의 10%가 잭팟에 적립됩니다.</li>
                             <li>나머지 90%가 플레이어에게 지급됩니다.</li>
-                            <li>풀하우스 이상이면 현재 잭팟이 보상에 더해지고, 배당금의 10%는 실패 대비용으로 먼저 다음 잭팟에 적립됩니다.</li>
-                            <li>미니게임에서 이겨 보상이 커진 경우에도 수령 시 10%가 다음 잭팟으로 적립됩니다.</li>
+                            <li>풀하우스 이상이면 잭팟 판이 되며, 현재 잭팟은 미니게임 승리 횟수만큼 곱해서 별도 지급됩니다.</li>
+                            <li>잭팟 판에서는 추가 잭팟 적립이 없고, 첫 미니게임에서 바로 실패하면 잭팟도 0P입니다.</li>
                         </ul>
                     </section>
 
@@ -684,6 +684,7 @@ function GameRuleModal({ isOpen, onClose }) {
 }
 
 const GAME_SAVE_VERSION = 1;
+const MIN_BET = 100;
 
 function getGameSaveKey(userId) {
     return `pokerGameState:${userId}`;
@@ -1106,7 +1107,10 @@ function Game({ user, setUser, setPage }) {
     const [winningCards, setWinningCards] = useState(savedGameState?.winningCards ?? []);
 
     const [result, setResult] = useState(savedGameState?.result ?? "");
-    const [bet, setBet] = useState(savedGameState?.bet ?? 10);
+    const [bet, setBet] = useState(() => {
+        const savedBet = Number(savedGameState?.bet ?? MIN_BET);
+        return savedBet >= MIN_BET ? savedBet : MIN_BET;
+    });
 
 
     useEffect(() => {
@@ -1465,8 +1469,8 @@ function Game({ user, setUser, setPage }) {
 
         const betAmount = Number(bet);
 
-        if (!betAmount || betAmount <= 0) {
-            setResult("배팅 금액은 1포인트 이상 입력해주세요.");
+        if (!betAmount || betAmount < MIN_BET) {
+            setResult(`배팅 금액은 ${MIN_BET}포인트 이상 입력해주세요.`);
             return;
         }
 
@@ -1486,8 +1490,8 @@ function Game({ user, setUser, setPage }) {
 
         const numericBet = Number(bet);
 
-        if (!numericBet || numericBet <= 0) {
-            setResult("베팅 금액을 올바르게 입력해주세요.");
+        if (!numericBet || numericBet < MIN_BET) {
+            setResult(`베팅 금액은 ${MIN_BET}포인트 이상 입력해주세요.`);
             return;
         }
 
@@ -1647,14 +1651,10 @@ function Game({ user, setUser, setPage }) {
         // 예: 잭팟 1000P, 미니게임 3연승 후 실패 -> 잭팟 1000P x 3 지급
         const rewardBeforeFee = rawReward;
 
-        // 잭팟이 터진 판은 기본 배당의 10%를 다음 잭팟으로 먼저 적립한다.
-        // 미니게임에서 실패해도 다음 잭팟이 0으로 완전히 비지 않게 하는 안전장치.
-        const jackpotSafetyFee = isJackpotHand
-            ? formatPoint(rawReward * JACKPOT_SAVE_RATE)
-            : 0;
-
+        // 잭팟 판에서는 잭팟 적립을 하지 않는다.
+        // 기존 잭팟은 jackpotBonusValue로 따로 보관하고, 현재 잭팟 풀은 0으로 초기화한다.
         const rewardAfterSafetyFee = rawReward;
-        const jackpotAfterHit = isJackpotHand ? jackpotSafetyFee : jackpot;
+        const jackpotAfterHit = isJackpotHand ? 0 : jackpot;
 
         setBaseReward(rawReward);
         setCurrentReward(rewardAfterSafetyFee);
@@ -1687,7 +1687,7 @@ function Game({ user, setUser, setPage }) {
 
             if (isJackpotHand) {
                 setResult(
-                    `${handName}! 기본 배당 ${rawReward}P / 잭팟 대상 ${jackpotBonusValue}P / 다음 잭팟 안전 적립 ${jackpotSafetyFee}P / 현재 기본 획득 예정 ${rewardAfterSafetyFee}P`
+                    `${handName}! 기본 배당 ${rawReward}P / 잭팟 대상 ${jackpotBonusValue}P / 잭팟 판은 추가 적립 없음 / 현재 기본 획득 예정 ${rewardAfterSafetyFee}P`
                 );
             } else {
                 setResult(
@@ -1824,9 +1824,9 @@ function Game({ user, setUser, setPage }) {
 
         const jackpotUsedValue = isJackpotHand && jackpotPayout > 0;
 
-        // 기본 배당은 10%를 다음 잭팟에 적립한다.
-        // 미니게임 연승으로 기본 배당이 커졌다면, 커진 기본 배당 기준으로 잭팟 적립도 커진다.
-        const fee = formatPoint(currentReward * JACKPOT_SAVE_RATE);
+        // 일반 판은 기본 보상의 10%를 잭팟에 적립한다.
+        // 잭팟 판은 추가 잭팟 적립이 없다.
+        const fee = isJackpotHand ? 0 : formatPoint(currentReward * JACKPOT_SAVE_RATE);
         const netBaseReward = formatPoint(currentReward - fee);
         const finalReward = formatPoint(netBaseReward + jackpotPayout);
         const updatedJackpot = formatPoint(jackpot + fee);
@@ -1878,7 +1878,7 @@ function Game({ user, setUser, setPage }) {
 
         if (jackpotUsedValue) {
             setResult(
-                `${lastHandName}! 기본 보상 ${netBaseReward}P + 잭팟 ${jackpotBonus}P x${jackpotMultiplier} = ${jackpotPayout}P / 잭팟 적립 ${fee}P / 실제 획득 ${finalReward}P를 받았습니다.`
+                `${lastHandName}! 기본 보상 ${netBaseReward}P + 잭팟 ${jackpotBonus}P x${jackpotMultiplier} = ${jackpotPayout}P / 잭팟 판 추가 적립 없음 / 실제 획득 ${finalReward}P를 받았습니다.`
             );
         } else if (usedMiniGame) {
             setResult(
@@ -1937,7 +1937,7 @@ function Game({ user, setUser, setPage }) {
                 playGameSound("win");
 
                 const nextStreak = miniWinStreak + 1;
-                const streakMultiplier = nextStreak + 1;
+                const streakMultiplier = Math.pow(2, nextStreak);
                 const originReward = Number(miniRewardOrigin || currentReward);
                 const streakReward = formatPoint(originReward * streakMultiplier);
 
@@ -2061,8 +2061,8 @@ function Game({ user, setUser, setPage }) {
 
                     <div className="game-popup-body compact">
                         <div className="popup-info-list">
-                            <p>성공할 때마다 기본 배당이 커지고, 잭팟 판은 성공한 연승 수만큼 잭팟 배율이 올라갑니다.</p>
-                            <p>실패하면 획득 예정 금액은 <strong>0P</strong>가 됩니다.</p>
+                            <p>성공할 때마다 기본 배당은 계속 2배가 되고, 잭팟 판은 성공한 연승 수만큼 잭팟 배율이 올라갑니다.</p>
+                            <p>실패하면 기본 보상은 <strong>0P</strong>가 됩니다. 잭팟 판도 0연승 실패면 잭팟은 0P입니다.</p>
                         </div>
                     </div>
 
@@ -2530,15 +2530,29 @@ function Game({ user, setUser, setPage }) {
                             <input
                                 type="number"
                                 value={bet}
-                                onChange={(e) => setBet(Number(e.target.value))}
-                                min="1"
+                                onChange={(e) => {
+                                    const value = Number(e.target.value);
+
+                                    if (!value) {
+                                        setBet(MIN_BET);
+                                        return;
+                                    }
+
+                                    setBet(value);
+                                }}
+                                onBlur={() => {
+                                    if (Number(bet) < MIN_BET) {
+                                        setBet(MIN_BET);
+                                    }
+                                }}
+                                min={MIN_BET}
                                 max={Number(user.coin ?? 0)}
                                 disabled={phase !== "ready" && phase !== "result"}
                             />
                         </div>
 
                         <p className="bet-help-text">
-                            보유 코인: <strong>{formatPoint(user.coin)}P</strong>
+                            최소 배팅: <strong>{MIN_BET}P</strong> / 보유 코인: <strong>{formatPoint(user.coin)}P</strong>
                         </p>
 
                         {phase !== "ready" && phase !== "result" && (
