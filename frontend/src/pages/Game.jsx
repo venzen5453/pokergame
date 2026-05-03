@@ -1469,20 +1469,22 @@ function Game({ user, setUser, setPage }) {
 
         const betAmount = Number(bet);
 
-        if (!betAmount || betAmount < MIN_BET) {
-            setResult(`배팅 금액은 ${MIN_BET}포인트 이상 입력해주세요.`);
-            return;
-        }
+if (!user) {
+    setResult("로그인이 필요합니다.");
+    return;
+}
 
-        if (!user) {
-            setResult("로그인이 필요합니다.");
-            return;
-        }
+if (!betAmount || betAmount < MIN_BET) {
+    setBet(MIN_BET);
+    setResult(`배팅 금액은 ${MIN_BET}포인트 이상 입력해주세요.`);
+    return;
+}
 
-        if (betAmount > Number(user.coin ?? 0)) {
-            setResult("보유 코인보다 큰 금액은 배팅할 수 없습니다.");
-            return;
-        }
+if (betAmount > Number(user.coin ?? 0)) {
+    setBet(Number(user.coin ?? 0));
+    setResult("보유 코인보다 큰 금액은 배팅할 수 없습니다.");
+    return;
+}
 
         if (phase !== "ready" && phase !== "result") {
             return;
@@ -2528,27 +2530,35 @@ function Game({ user, setUser, setPage }) {
                         <div className="bet-input-box">
                             <label>배팅 포인트</label>
                             <input
-                                type="number"
-                                value={bet}
-                                onChange={(e) => {
-                                    const value = Number(e.target.value);
+    type="number"
+    value={bet}
+    onChange={(e) => {
+        const value = e.target.value;
 
-                                    if (!value) {
-                                        setBet(MIN_BET);
-                                        return;
-                                    }
+        // 입력 중에는 빈칸 허용
+        if (value === "") {
+            setBet("");
+            return;
+        }
 
-                                    setBet(value);
-                                }}
-                                onBlur={() => {
-                                    if (Number(bet) < MIN_BET) {
-                                        setBet(MIN_BET);
-                                    }
-                                }}
-                                min={MIN_BET}
-                                max={Number(user.coin ?? 0)}
-                                disabled={phase !== "ready" && phase !== "result"}
-                            />
+        setBet(Number(value));
+    }}
+    onBlur={() => {
+        const numericBet = Number(bet);
+
+        if (!numericBet || numericBet < MIN_BET) {
+            setBet(MIN_BET);
+            return;
+        }
+
+        if (numericBet > Number(user.coin ?? 0)) {
+            setBet(Number(user.coin ?? 0));
+        }
+    }}
+    min={MIN_BET}
+    max={Number(user.coin ?? 0)}
+    disabled={phase !== "ready" && phase !== "result"}
+/>
                         </div>
 
                         <p className="bet-help-text">
