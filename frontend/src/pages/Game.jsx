@@ -353,15 +353,15 @@ const playSound = (type, masterVolume = 0.7) => {
             ],
 
             deal: [
-                // 카드가 빠르게 지나가도 소리가 잘리지 않도록 길이와 볼륨을 조금 늘림
-                { frequency: 260, duration: 0.11, delay: 0, volume: 0.08, wave: "square" },
-                { frequency: 360, duration: 0.10, delay: 0.06, volume: 0.065, wave: "square" }
+                // 원래 배분 속도에 맞게 짧고 빠르게 끝나는 카드 배분음
+                { frequency: 320, duration: 0.045, delay: 0, volume: 0.09, wave: "square" },
+                { frequency: 420, duration: 0.035, delay: 0.025, volume: 0.055, wave: "square" }
             ],
 
             flip: [
-                // 뒤집는 소리도 너무 짧으면 여러 장이 겹칠 때 안 들리는 느낌이 생김
-                { frequency: 520, duration: 0.09, delay: 0, volume: 0.075, wave: "triangle" },
-                { frequency: 780, duration: 0.10, delay: 0.055, volume: 0.07, wave: "triangle" }
+                // 카드 뒤집힘과 맞도록 짧고 선명한 플립음
+                { frequency: 620, duration: 0.04, delay: 0, volume: 0.075, wave: "triangle" },
+                { frequency: 920, duration: 0.035, delay: 0.025, volume: 0.06, wave: "triangle" }
             ],
 
             exchange: [
@@ -723,11 +723,11 @@ const MIN_BET = 100;
 
 const CARD_INDEXES = [0, 1, 2, 3, 4];
 
-// 체감 속도 최적화용 애니메이션 시간
-const FAST_DEAL_INTERVAL = 260;
-const FAST_FLIP_START = 1500;
-const FAST_FLIP_INTERVAL = 230;
-const FAST_DRAW_READY_TIME = 2850;
+// 원래 카드 배분 속도
+const FAST_DEAL_INTERVAL = 180;
+const FAST_FLIP_START = 1100;
+const FAST_FLIP_INTERVAL = 170;
+const FAST_DRAW_READY_TIME = 2100;
 
 const FAST_EXCHANGE_OUT_BASE = 280;
 const FAST_EXCHANGE_OUT_INTERVAL = 70;
