@@ -710,10 +710,10 @@ const MIN_BET = 100;
 const CARD_INDEXES = [0, 1, 2, 3, 4];
 
 // 체감 속도 최적화용 애니메이션 시간
-const FAST_DEAL_INTERVAL = 90;
-const FAST_FLIP_START = 560;
-const FAST_FLIP_INTERVAL = 80;
-const FAST_DRAW_READY_TIME = 1150;
+const FAST_DEAL_INTERVAL = 180;
+const FAST_FLIP_START = 1100;
+const FAST_FLIP_INTERVAL = 170;
+const FAST_DRAW_READY_TIME = 2100;
 
 const FAST_EXCHANGE_OUT_BASE = 280;
 const FAST_EXCHANGE_OUT_INTERVAL = 70;
@@ -1094,40 +1094,68 @@ function Game({ user, setUser, setPage }) {
         );
     };
 
-    const saveUserData = async (updatedUser) => {
+    const saveUserData = async (updatedUser, options = {}) => {
+        const { applyLocal = true } = options;
+
+        const toSafePoint = (value) => {
+            const numberValue = Number(value ?? 0);
+            return Number.isFinite(numberValue) ? formatPoint(numberValue) : 0;
+        };
+
         try {
+            const normalizedUser = {
+                ...updatedUser,
+                coin: toSafePoint(updatedUser.coin),
+                jackpot: toSafePoint(updatedUser.jackpot),
+                win: Number(updatedUser.win ?? 0),
+                lose_count: Number(updatedUser.lose_count ?? 0)
+            };
+
             const response = await fetch(`${API_BASE_URL}/update-user`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    id: updatedUser.id,
-                    coin: Number(updatedUser.coin ?? 0),
-                    jackpot: Number(updatedUser.jackpot ?? 0),
-                    win: Number(updatedUser.win ?? 0),
-                    lose_count: Number(updatedUser.lose_count ?? 0)
+                    id: normalizedUser.id,
+                    coin: normalizedUser.coin,
+                    jackpot: normalizedUser.jackpot,
+                    win: normalizedUser.win,
+                    lose_count: normalizedUser.lose_count
                 })
             });
 
-            const data = await response.json();
+            let data = null;
+
+            try {
+                data = await response.json();
+            } catch {
+                data = null;
+            }
 
             if (!response.ok) {
                 console.error("유저 정보 저장 실패:", data);
-                setResult(data.message || "유저 정보 저장에 실패했습니다.");
+                setResult(data?.message || "유저 정보 저장에 실패했습니다.");
                 return false;
             }
 
-            const freshUser = {
-                ...updatedUser,
-                coin: Number(updatedUser.coin ?? 0),
-                jackpot: Number(updatedUser.jackpot ?? 0),
-                win: Number(updatedUser.win ?? 0),
-                lose_count: Number(updatedUser.lose_count ?? 0)
-            };
+            if (applyLocal) {
+                const currentCoin = Number(user?.coin ?? 0);
+                const currentJackpot = Number(user?.jackpot ?? 0);
+                const currentWin = Number(user?.win ?? 0);
+                const currentLose = Number(user?.lose_count ?? 0);
 
-            setUser(freshUser);
-            localStorage.setItem("pokerUser", JSON.stringify(freshUser));
+                const hasChanged =
+                    currentCoin !== normalizedUser.coin ||
+                    currentJackpot !== normalizedUser.jackpot ||
+                    currentWin !== normalizedUser.win ||
+                    currentLose !== normalizedUser.lose_count;
+
+                if (hasChanged) {
+                    setUser(normalizedUser);
+                    localStorage.setItem("pokerUser", JSON.stringify(normalizedUser));
+                }
+            }
 
             return true;
         } catch (error) {
@@ -1135,7 +1163,7 @@ function Game({ user, setUser, setPage }) {
             setResult("서버와 연결할 수 없어 돈 저장에 실패했습니다.");
             return false;
         }
-    };;
+    };
 
     const saveGameLog = async ({
                                    handNameValue,
@@ -1213,15 +1241,27 @@ function Game({ user, setUser, setPage }) {
             if (response.ok) {
                 const freshUser = {
                     ...data.user,
-                    coin: Number(data.user.coin ?? 0),
-                    jackpot: Number(data.user.jackpot ?? 0),
+                    coin: formatPoint(Number(data.user.coin ?? 0)),
+                    jackpot: formatPoint(Number(data.user.jackpot ?? 0)),
                     win: Number(data.user.win ?? 0),
                     lose_count: Number(data.user.lose_count ?? 0)
                 };
 
-                setUser(freshUser);
-                setJackpot(freshUser.jackpot);
-                localStorage.setItem("pokerUser", JSON.stringify(freshUser));
+                const hasChanged =
+                    Number(user?.coin ?? 0) !== freshUser.coin ||
+                    Number(user?.jackpot ?? 0) !== freshUser.jackpot ||
+                    Number(user?.win ?? 0) !== freshUser.win ||
+                    Number(user?.lose_count ?? 0) !== freshUser.lose_count;
+
+                if (hasChanged) {
+                    setUser(freshUser);
+                    localStorage.setItem("pokerUser", JSON.stringify(freshUser));
+                }
+
+                setJackpot(prevJackpot => {
+                    const currentJackpot = Number(prevJackpot ?? 0);
+                    return currentJackpot === freshUser.jackpot ? prevJackpot : freshUser.jackpot;
+                });
             }
         } catch (error) {
             console.error("유저 정보 새로고침 실패:", error);
@@ -1287,7 +1327,8 @@ function Game({ user, setUser, setPage }) {
             return;
         }
 
-        // 애니메이션 중에는 저장하지 않음: localStorage JSON 저장이 잦으면 게임이 버벅임
+        // 애니메이션 중에는 localStorage 저장을 건너뜀.
+        // 돈 저장 안정성을 위해 DB 저장은 유지하고, 화면 상태 저장만 줄여서 버벅임을 줄임.
         const skipSavePhases = ["dealing", "exchanging", "miniRevealing"];
 
         if (skipSavePhases.includes(phase)) {
@@ -1333,7 +1374,7 @@ function Game({ user, setUser, setPage }) {
             } catch (error) {
                 console.error("게임 상태 저장 실패:", error);
             }
-        }, 250);
+        }, 300);
 
         return () => clearTimeout(timerId);
     }, [
@@ -1341,8 +1382,6 @@ function Game({ user, setUser, setPage }) {
         deck,
         hand,
         heldCards,
-        dealtCount,
-        revealedCards,
         phase,
         winningCards,
         result,
@@ -1594,7 +1633,6 @@ function Game({ user, setUser, setPage }) {
         }
 
         clearAllTimers();
-        playGameSound("deal");
 
         const roundNumber = getCurrentRoundNumber(user);
         const jokerRule = getJokerRule(roundNumber);
@@ -1692,19 +1730,16 @@ function Game({ user, setUser, setPage }) {
 
         for (let i = 0; i < 5; i++) {
             addTimer(() => {
-                if (i === 0 || i === 4) {
-                    playGameSound("deal");
-                }
-
+                // 카드 1장 배분될 때마다 1번씩, 총 5번 재생
+                playGameSound("deal");
                 setDealtCount(i + 1);
             }, i * FAST_DEAL_INTERVAL);
         }
 
         for (let i = 0; i < 5; i++) {
             addTimer(() => {
-                if (i === 0 || i === 4) {
-                    playGameSound("flip");
-                }
+                // 카드 1장 뒤집힐 때마다 1번씩, 총 5번 재생
+                playGameSound("flip");
 
                 setRevealedCards(prev => {
                     if (prev.includes(i)) return prev;
@@ -1774,21 +1809,10 @@ function Game({ user, setUser, setPage }) {
         setIncomingCards([]);
 
         if (isMiniGameTarget) {
+            // 여기서는 DB 저장하지 않음.
+            // 미니게임 도전 여부가 끝나기 전이라 저장하면 중간에 렌더링/통신이 끼어서 버벅일 수 있음.
+            // 실제 돈/잭팟 저장은 takeReward 또는 finishAfterFail에서 한 번만 처리.
             setJackpot(jackpotAfterHit);
-
-            const updatedUser = {
-                ...user,
-                coin: Number(user.coin ?? 0),
-                jackpot: Number(jackpotAfterHit ?? 0),
-                win: Number(user.win ?? 0),
-                lose_count: Number(user.lose_count ?? 0)
-            };
-
-            const saved = await saveUserData(updatedUser);
-
-            if (!saved) {
-                return;
-            }
 
             if (isJackpotHand) {
                 setResult(
@@ -1833,7 +1857,7 @@ function Game({ user, setUser, setPage }) {
             return;
         }
 
-        await saveGameLog({
+        void saveGameLog({
             handNameValue: handName,
             baseRewardValue: rawReward,
             jackpotFeeValue: fee,
@@ -2016,7 +2040,7 @@ function Game({ user, setUser, setPage }) {
             // 중요: 결과 화면을 먼저 띄워서 버튼을 사라지게 함
             setPhase("result");
 
-            await saveGameLog({
+            void saveGameLog({
                 handNameValue: lastHandName,
                 baseRewardValue: baseReward,
                 jackpotFeeValue: fee,
@@ -2143,17 +2167,6 @@ function Game({ user, setUser, setPage }) {
             return;
         }
 
-        await saveGameLog({
-            handNameValue: lastHandName,
-            baseRewardValue: baseReward,
-            jackpotFeeValue: 0,
-            finalReward: finalReward,
-            usedMiniGameValue: true,
-            miniResult: `fail_after_${miniWinStreak}`,
-            jackpotUsedValue: jackpotUsedValue,
-            finalCardsValue: hand
-        });
-
         setResultDetail({
             handName: lastHandName,
             bet: Number(bet),
@@ -2181,6 +2194,17 @@ function Game({ user, setUser, setPage }) {
         setJackpotBonus(0);
 
         setPhase("result");
+
+        void saveGameLog({
+            handNameValue: lastHandName,
+            baseRewardValue: baseReward,
+            jackpotFeeValue: 0,
+            finalReward: finalReward,
+            usedMiniGameValue: true,
+            miniResult: `fail_after_${miniWinStreak}`,
+            jackpotUsedValue: jackpotUsedValue,
+            finalCardsValue: hand
+        });
     };
 
     const isGamePopupOpen = [
