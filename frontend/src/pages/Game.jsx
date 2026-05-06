@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { API_BASE_URL } from "../api";
 import MissionModal from "./MissionModal";
 
@@ -1129,6 +1129,14 @@ function Game({ user, setUser, setPage }) {
     const [incomingCards, setIncomingCards] = useState(savedGameState?.incomingCards ?? []);
     const [winningCards, setWinningCards] = useState(savedGameState?.winningCards ?? []);
 
+    const rewardProcessingRef = useRef(false);
+    const [isRewardProcessing, setIsRewardProcessing] = useState(false);
+
+    const resetRewardProcessing = () => {
+        rewardProcessingRef.current = false;
+        setIsRewardProcessing(false);
+    };
+
     const [result, setResult] = useState(savedGameState?.result ?? "");
     const [bet, setBet] = useState(() => {
         const savedBet = Number(savedGameState?.bet ?? MIN_BET);
@@ -1608,6 +1616,9 @@ if (betAmount > Number(user.coin ?? 0)) {
         setIncomingCards([]);
         setWinningCards([]);
         setResult("");
+
+        resetRewardProcessing();
+
         setBaseReward(0);
 
         setCurrentReward(0);
@@ -1845,97 +1856,113 @@ if (betAmount > Number(user.coin ?? 0)) {
     };
 
     const takeReward = async () => {
-        const isJackpotHand = handPower[lastHandName] >= handPower["풀하우스"];
+        if (!["miniChoice", "miniSuccess"].includes(phase)) return;
 
-        // 잭팟은 기본 배당과 분리해서 계산한다.
-        // 미니게임을 안 하고 바로 받으면 x1, 미니게임을 n연승하고 받으면 xN.
-        const jackpotMultiplier = isJackpotHand
-            ? (usedMiniGame ? miniWinStreak : 1)
-            : 0;
+        if (rewardProcessingRef.current) return;
 
-        const jackpotPayout = isJackpotHand
-            ? formatPoint(Number(jackpotBonus) * jackpotMultiplier)
-            : 0;
+        rewardProcessingRef.current = true;
+        setIsRewardProcessing(true);
 
-        const jackpotUsedValue = isJackpotHand && jackpotPayout > 0;
+        try {
+            const isJackpotHand = handPower[lastHandName] >= handPower["풀하우스"];
 
-        // 일반 판은 기본 보상의 10%를 잭팟에 적립한다.
-        // 잭팟 판은 추가 잭팟 적립이 없다.
-        const fee = isJackpotHand ? 0 : formatPoint(currentReward * JACKPOT_SAVE_RATE);
-        const netBaseReward = formatPoint(currentReward - fee);
-        const finalReward = formatPoint(netBaseReward + jackpotPayout);
-        const updatedJackpot = formatPoint(jackpot + fee);
+            const jackpotMultiplier = isJackpotHand
+                ? (usedMiniGame ? miniWinStreak : 1)
+                : 0;
 
-        if (jackpotUsedValue) {
-            playGameSound("jackpot");
-        } else if (finalReward > 0) {
-            playGameSound("win");
+            const jackpotPayout = isJackpotHand
+                ? formatPoint(Number(jackpotBonus) * jackpotMultiplier)
+                : 0;
+
+            const jackpotUsedValue = isJackpotHand && jackpotPayout > 0;
+
+            const fee = isJackpotHand ? 0 : formatPoint(currentReward * JACKPOT_SAVE_RATE);
+            const netBaseReward = formatPoint(currentReward - fee);
+            const finalReward = formatPoint(netBaseReward + jackpotPayout);
+            const updatedJackpot = formatPoint(jackpot + fee);
+
+            if (jackpotUsedValue) {
+                playGameSound("jackpot");
+            } else if (finalReward > 0) {
+                playGameSound("win");
+            }
+
+            const isWin = finalReward > 0;
+
+            const updatedUser = {
+                ...user,
+                coin: formatPoint(Number(user.coin ?? 0) + finalReward),
+                jackpot: Number(updatedJackpot ?? 0),
+                win: isWin ? Number(user.win ?? 0) + 1 : Number(user.win ?? 0),
+                lose_count: isWin ? Number(user.lose_count ?? 0) : Number(user.lose_count ?? 0) + 1
+            };
+
+            const saved = await saveUserData(updatedUser);
+
+            if (!saved) {
+                resetRewardProcessing();
+                return;
+            }
+
+            const nextResultDetail = {
+                handName: lastHandName,
+                bet: Number(bet),
+                baseReward: baseReward,
+                jackpotFee: fee,
+                finalReward: finalReward,
+                usedMiniGame: usedMiniGame,
+                miniResult: usedMiniGame ? "success" : "none",
+                jackpotUsed: jackpotUsedValue,
+                jackpotBonus: jackpotBonus,
+                miniWinStreak: miniWinStreak
+            };
+
+            setJackpot(updatedJackpot);
+            setCurrentReward(finalReward);
+            setResultDetail(nextResultDetail);
+
+            if (jackpotUsedValue) {
+                setResult(
+                    `${lastHandName}! 기본 보상 ${netBaseReward}P + 잭팟 ${jackpotBonus}P x${jackpotMultiplier} = ${jackpotPayout}P / 잭팟 판 추가 적립 없음 / 실제 획득 ${finalReward}P를 받았습니다.`
+                );
+            } else if (usedMiniGame) {
+                setResult(
+                    `${lastHandName}! 미니게임 ${miniWinStreak}연승 기본 보상에서 ${fee}P를 잭팟으로 적립하고 ${finalReward}P를 받았습니다.`
+                );
+            } else {
+                setResult(
+                    `${lastHandName}! 잭팟 적립 ${fee}P / 실제 획득 ${finalReward}P를 받았습니다.`
+                );
+            }
+
+            setMiniRewardOrigin(0);
+            setMiniWinStreak(0);
+            setJackpotBonus(0);
+
+            // 중요: 결과 화면을 먼저 띄워서 버튼을 사라지게 함
+            setPhase("result");
+
+            await saveGameLog({
+                handNameValue: lastHandName,
+                baseRewardValue: baseReward,
+                jackpotFeeValue: fee,
+                finalReward: finalReward,
+                usedMiniGameValue: usedMiniGame,
+                miniResult: usedMiniGame ? `success_${miniWinStreak}` : "none",
+                jackpotUsedValue: jackpotUsedValue,
+                finalCardsValue: hand
+            });
+        } catch (error) {
+            console.error("보상 수령 처리 실패:", error);
+            setResult("보상 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+            resetRewardProcessing();
         }
-
-        const isWin = finalReward > 0;
-
-        setJackpot(updatedJackpot);
-        setCurrentReward(finalReward);
-
-        const updatedUser = {
-            ...user,
-            coin: formatPoint(Number(user.coin ?? 0) + finalReward),
-            jackpot: Number(updatedJackpot ?? 0),
-            win: isWin ? Number(user.win ?? 0) + 1 : Number(user.win ?? 0),
-            lose_count: isWin ? Number(user.lose_count ?? 0) : Number(user.lose_count ?? 0) + 1
-        };
-
-        const saved = await saveUserData(updatedUser);
-
-        if (!saved) {
-            return;
-        }
-
-        await saveGameLog({
-            handNameValue: lastHandName,
-            baseRewardValue: baseReward,
-            jackpotFeeValue: fee,
-            finalReward: finalReward,
-            usedMiniGameValue: usedMiniGame,
-            miniResult: usedMiniGame ? `success_${miniWinStreak}` : "none",
-            jackpotUsedValue: jackpotUsedValue,
-            finalCardsValue: hand
-        });
-
-        setResultDetail({
-            handName: lastHandName,
-            bet: Number(bet),
-            baseReward: baseReward,
-            jackpotFee: fee,
-            finalReward: finalReward,
-            usedMiniGame: usedMiniGame,
-            miniResult: usedMiniGame ? "success" : "none",
-            jackpotUsed: jackpotUsedValue,
-            jackpotBonus: jackpotBonus,
-            miniWinStreak: miniWinStreak
-        });
-
-        if (jackpotUsedValue) {
-            setResult(
-                `${lastHandName}! 기본 보상 ${netBaseReward}P + 잭팟 ${jackpotBonus}P x${jackpotMultiplier} = ${jackpotPayout}P / 잭팟 판 추가 적립 없음 / 실제 획득 ${finalReward}P를 받았습니다.`
-            );
-        } else if (usedMiniGame) {
-            setResult(
-                `${lastHandName}! 미니게임 ${miniWinStreak}연승 기본 보상에서 ${fee}P를 잭팟으로 적립하고 ${finalReward}P를 받았습니다.`
-            );
-        } else {
-            setResult(
-                `${lastHandName}! 잭팟 적립 ${fee}P / 실제 획득 ${finalReward}P를 받았습니다.`
-            );
-        }
-
-        setMiniRewardOrigin(0);
-        setMiniWinStreak(0);
-        setJackpotBonus(0);
-        setPhase("result");
     };
 
     const startMiniGame = () => {
+        if (rewardProcessingRef.current) return;
+        if (!["miniChoice", "miniSuccess"].includes(phase)) return;
+
         playGameSound("click");
 
         const leftCard = drawMiniGameCard();
@@ -2014,11 +2041,15 @@ if (betAmount > Number(user.coin ?? 0)) {
     };
 
     const finishAfterFail = async () => {
+        if (phase !== "miniFail") return;
+
+        if (rewardProcessingRef.current) return;
+
+        rewardProcessingRef.current = true;
+        setIsRewardProcessing(true);
+
         const isJackpotHand = handPower[lastHandName] >= handPower["풀하우스"];
 
-        // 미니게임 실패 시 기본 배당은 0P.
-        // 단, 잭팟 판이면 실패 직전까지 이긴 연승 수만큼 잭팟을 지급한다.
-        // 예: 잭팟 1000P, 3연승 후 4판에서 실패 -> 1000P x 3 지급
         const jackpotMultiplier = isJackpotHand ? miniWinStreak : 0;
         const jackpotPayout = isJackpotHand
             ? formatPoint(Number(jackpotBonus) * jackpotMultiplier)
@@ -2039,6 +2070,7 @@ if (betAmount > Number(user.coin ?? 0)) {
         const saved = await saveUserData(updatedUser);
 
         if (!saved) {
+            resetRewardProcessing();
             return;
         }
 
@@ -2109,8 +2141,20 @@ if (betAmount > Number(user.coin ?? 0)) {
                     </div>
 
                     <div className="game-popup-actions two-buttons">
-                        <button className="result-main-button" onClick={startMiniGame}>도전하기</button>
-                        <button className="result-sub-button" onClick={takeReward}>그만하고 받기</button>
+                        <button
+                            className="result-main-button"
+                            onClick={startMiniGame}
+                            disabled={isRewardProcessing}
+                        >
+                            도전하기
+                        </button>
+                        <button
+                            className="result-sub-button"
+                            onClick={takeReward}
+                            disabled={isRewardProcessing}
+                        >
+                            {isRewardProcessing ? "처리 중..." : "그만하고 받기"}
+                        </button>
                     </div>
                 </>
             );
@@ -2203,8 +2247,20 @@ if (betAmount > Number(user.coin ?? 0)) {
                     </div>
 
                     <div className="game-popup-actions two-buttons">
-                        <button className="result-main-button" onClick={continueMiniGame}>계속 도전</button>
-                        <button className="result-sub-button" onClick={takeReward}>그만하고 받기</button>
+                        <button
+                            className="result-main-button"
+                            onClick={continueMiniGame}
+                            disabled={isRewardProcessing}
+                        >
+                            계속 도전
+                        </button>
+                        <button
+                            className="result-sub-button"
+                            onClick={takeReward}
+                            disabled={isRewardProcessing}
+                        >
+                            {isRewardProcessing ? "처리 중..." : "그만하고 받기"}
+                        </button>
                     </div>
                 </>
             );
@@ -2234,7 +2290,13 @@ if (betAmount > Number(user.coin ?? 0)) {
                     </div>
 
                     <div className="game-popup-actions one-button">
-                        <button className="result-main-button" onClick={finishAfterFail}>결과 확인</button>
+                        <button
+                            className="result-main-button"
+                            onClick={finishAfterFail}
+                            disabled={isRewardProcessing}
+                        >
+                            {isRewardProcessing ? "처리 중..." : "결과 확인"}
+                        </button>
                     </div>
                 </>
             );
