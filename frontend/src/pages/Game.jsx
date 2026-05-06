@@ -364,6 +364,18 @@ const playSound = (type, masterVolume = 0.7, startDelayMs = 0) => {
                 { frequency: 920, duration: 0.035, delay: 0.025, volume: 0.06, wave: "triangle" }
             ],
 
+            exchangeFlip: [
+                // 교환 후 새 카드를 받을 때 쓰는 짧고 또렷한 소리
+                { frequency: 660, duration: 0.035, delay: 0, volume: 0.085, wave: "triangle" },
+                { frequency: 940, duration: 0.03, delay: 0.022, volume: 0.065, wave: "triangle" }
+            ],
+
+            exchangeLastFlip: [
+                // 마지막 교환 카드 소리가 묻히지 않도록 살짝 더 선명하게 처리
+                { frequency: 720, duration: 0.04, delay: 0, volume: 0.105, wave: "triangle" },
+                { frequency: 1040, duration: 0.035, delay: 0.024, volume: 0.075, wave: "triangle" }
+            ],
+
             exchange: [
                 { frequency: 300, duration: 0.08, delay: 0, volume: 0.07, wave: "sawtooth" },
                 { frequency: 220, duration: 0.08, delay: 0.07, volume: 0.06, wave: "sawtooth" }
@@ -1939,6 +1951,21 @@ function Game({ user, setUser, setPage }) {
         const outAnimationTime =
             FAST_EXCHANGE_OUT_BASE + exchangeIndexes.length * FAST_EXCHANGE_OUT_INTERVAL;
 
+        // 교환 후 새 카드 받는 소리도 setTimeout 콜백 안에서 재생하지 않고
+        // WebAudio에 먼저 예약한다. 그래야 마지막 카드 소리가 렌더링에 묻히지 않는다.
+        exchangeIndexes.forEach((index, order) => {
+            const soundDelay =
+                outAnimationTime +
+                FAST_EXCHANGE_REVEAL_START +
+                order * FAST_EXCHANGE_REVEAL_INTERVAL;
+
+            const soundType = order === exchangeIndexes.length - 1
+                ? "exchangeLastFlip"
+                : "exchangeFlip";
+
+            playGameSound(soundType, soundDelay);
+        });
+
         addTimer(() => {
             setHand(newHand);
             setDeck(newDeck);
@@ -1953,10 +1980,6 @@ function Game({ user, setUser, setPage }) {
 
             exchangeIndexes.forEach((index, order) => {
                 addTimer(() => {
-                    if (order === 0 || order === exchangeIndexes.length - 1) {
-                        playGameSound("flip");
-                    }
-
                     setRevealedCards(prev => {
                         if (prev.includes(index)) return prev;
                         return [...prev, index];
