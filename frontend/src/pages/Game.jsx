@@ -330,7 +330,7 @@ const primePokerAudioContext = () => {
     }
 };
 
-const playSound = (type, masterVolume = 0.7) => {
+const playSound = (type, masterVolume = 0.7, startDelayMs = 0) => {
     try {
         if (masterVolume <= 0) return;
 
@@ -340,7 +340,7 @@ const playSound = (type, masterVolume = 0.7) => {
             audioCtx.resume();
         }
 
-        const now = audioCtx.currentTime;
+        const baseTime = audioCtx.currentTime + Math.max(0, startDelayMs) / 1000;
 
         const soundPatterns = {
             click: [
@@ -406,23 +406,23 @@ const playSound = (type, masterVolume = 0.7) => {
             const gainNode = audioCtx.createGain();
 
             oscillator.type = note.wave;
-            oscillator.frequency.setValueAtTime(note.frequency, now + note.delay);
+            oscillator.frequency.setValueAtTime(note.frequency, baseTime + note.delay);
 
-            gainNode.gain.setValueAtTime(0.001, now + note.delay);
+            gainNode.gain.setValueAtTime(0.001, baseTime + note.delay);
             gainNode.gain.exponentialRampToValueAtTime(
                 note.volume * masterVolume,
-                now + note.delay + 0.01
+                baseTime + note.delay + 0.01
             );
             gainNode.gain.exponentialRampToValueAtTime(
                 0.001,
-                now + note.delay + note.duration
+                baseTime + note.delay + note.duration
             );
 
             oscillator.connect(gainNode);
             gainNode.connect(audioCtx.destination);
 
-            oscillator.start(now + note.delay);
-            oscillator.stop(now + note.delay + note.duration + 0.03);
+            oscillator.start(baseTime + note.delay);
+            oscillator.stop(baseTime + note.delay + note.duration + 0.03);
         });
     } catch (error) {
         console.error("효과음 재생 실패:", error);
@@ -1416,9 +1416,9 @@ function Game({ user, setUser, setPage }) {
         miniSelectedGuess
     ]);
 
-    const playGameSound = (type) => {
+    const playGameSound = (type, startDelayMs = 0) => {
         if (!soundEnabled) return;
-        playSound(type, soundVolume);
+        playSound(type, soundVolume, startDelayMs);
     };
 
     const [jokerOverlay, setJokerOverlay] = useState(null);
@@ -1745,21 +1745,24 @@ function Game({ user, setUser, setPage }) {
         setMiniSelectedGuess("");
         setPhase("dealing");
 
+        // 소리는 setTimeout 실행 타이밍에 맡기지 않고 WebAudio에 먼저 예약한다.
+        // 이렇게 해야 5번째 카드 소리가 렌더링/상태 변경에 밀려서 씹히지 않는다.
+        for (let i = 0; i < 5; i++) {
+            playGameSound("deal", i * FAST_DEAL_INTERVAL);
+        }
+
+        for (let i = 0; i < 5; i++) {
+            playGameSound("flip", FAST_FLIP_START + i * FAST_FLIP_INTERVAL);
+        }
+
         for (let i = 0; i < 5; i++) {
             addTimer(() => {
-                // 카드 1장 배분될 때마다 1번씩, 총 5번 재생
-                playGameSound("deal");
-
-                // 소리를 먼저 예약하고 화면 갱신을 처리해서 소리가 덜 씹히게 함
                 setDealtCount(i + 1);
             }, i * FAST_DEAL_INTERVAL);
         }
 
         for (let i = 0; i < 5; i++) {
             addTimer(() => {
-                // 카드 1장 뒤집힐 때마다 1번씩, 총 5번 재생
-                playGameSound("flip");
-
                 setRevealedCards(prev => {
                     if (prev.includes(i)) return prev;
                     return [...prev, i];
