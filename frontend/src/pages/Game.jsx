@@ -1042,23 +1042,46 @@ function Game({ user, setUser, setPage }) {
 
     const saveUserData = async (updatedUser) => {
         try {
-            await fetch(`${API_BASE_URL}/update-user`, {
+            const response = await fetch(`${API_BASE_URL}/update-user`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
                     id: updatedUser.id,
-                    coin: updatedUser.coin,
-                    jackpot: updatedUser.jackpot ?? 0,
-                    win: updatedUser.win ?? 0,
-                    lose_count: updatedUser.lose_count ?? 0
+                    coin: Number(updatedUser.coin ?? 0),
+                    jackpot: Number(updatedUser.jackpot ?? 0),
+                    win: Number(updatedUser.win ?? 0),
+                    lose_count: Number(updatedUser.lose_count ?? 0)
                 })
             });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                console.error("유저 정보 저장 실패:", data);
+                setResult(data.message || "유저 정보 저장에 실패했습니다.");
+                return false;
+            }
+
+            const freshUser = {
+                ...updatedUser,
+                coin: Number(updatedUser.coin ?? 0),
+                jackpot: Number(updatedUser.jackpot ?? 0),
+                win: Number(updatedUser.win ?? 0),
+                lose_count: Number(updatedUser.lose_count ?? 0)
+            };
+
+            setUser(freshUser);
+            localStorage.setItem("pokerUser", JSON.stringify(freshUser));
+
+            return true;
         } catch (error) {
-            console.error("유저 정보 저장 실패:", error);
+            console.error("유저 정보 저장 오류:", error);
+            setResult("서버와 연결할 수 없어 돈 저장에 실패했습니다.");
+            return false;
         }
-    };
+    };;
 
     const saveGameLog = async ({
                                    handNameValue,
@@ -1463,7 +1486,7 @@ function Game({ user, setUser, setPage }) {
             ? `${currentRoundNumber}판! 이번 판은 조커 등장 확률이 45%입니다.`
             : "";
 
-    const startGame = () => {
+    const startGame = async () => {
 
         playGameSound("deal");
 
@@ -1570,8 +1593,11 @@ if (betAmount > Number(user.coin ?? 0)) {
             jackpot: jackpot
         };
 
-        setUser(updatedUser);
-        saveUserData(updatedUser);
+        const saved = await saveUserData(updatedUser);
+
+        if (!saved) {
+            return;
+        }
 
         setDeck(remainingDeck);
         setHand(firstHand);
@@ -1634,7 +1660,7 @@ if (betAmount > Number(user.coin ?? 0)) {
         }
     };
 
-    const finishExchangeResult = (newHand, newDeck) => {
+    const finishExchangeResult = async (newHand, newDeck) => {
         const handName = evaluateHand(newHand);
         const multiplier = payoutTable[handName];
 
@@ -1679,13 +1705,17 @@ if (betAmount > Number(user.coin ?? 0)) {
 
             const updatedUser = {
                 ...user,
-                jackpot: jackpotAfterHit,
-                win: user.win ?? 0,
-                lose_count: user.lose_count ?? 0
+                coin: Number(user.coin ?? 0),
+                jackpot: Number(jackpotAfterHit ?? 0),
+                win: Number(user.win ?? 0),
+                lose_count: Number(user.lose_count ?? 0)
             };
 
-            setUser(updatedUser);
-            saveUserData(updatedUser);
+            const saved = await saveUserData(updatedUser);
+
+            if (!saved) {
+                return;
+            }
 
             if (isJackpotHand) {
                 setResult(
@@ -1718,16 +1748,19 @@ if (betAmount > Number(user.coin ?? 0)) {
 
         const updatedUser = {
             ...user,
-            coin: formatPoint(user.coin + netReward),
+            coin: formatPoint(Number(user.coin ?? 0) + netReward),
             jackpot: updatedJackpot,
-            win: isWin ? (user.win ?? 0) + 1 : (user.win ?? 0),
-            lose_count: isWin ? (user.lose_count ?? 0) : (user.lose_count ?? 0) + 1
+            win: isWin ? Number(user.win ?? 0) + 1 : Number(user.win ?? 0),
+            lose_count: isWin ? Number(user.lose_count ?? 0) : Number(user.lose_count ?? 0) + 1
         };
 
-        setUser(updatedUser);
-        saveUserData(updatedUser);
+        const saved = await saveUserData(updatedUser);
 
-        saveGameLog({
+        if (!saved) {
+            return;
+        }
+
+        await saveGameLog({
             handNameValue: handName,
             baseRewardValue: rawReward,
             jackpotFeeValue: fee,
@@ -1811,7 +1844,7 @@ if (betAmount > Number(user.coin ?? 0)) {
         }, outAnimationTime);
     };
 
-    const takeReward = () => {
+    const takeReward = async () => {
         const isJackpotHand = handPower[lastHandName] >= handPower["풀하우스"];
 
         // 잭팟은 기본 배당과 분리해서 계산한다.
@@ -1846,15 +1879,19 @@ if (betAmount > Number(user.coin ?? 0)) {
 
         const updatedUser = {
             ...user,
-            coin: formatPoint(user.coin + finalReward),
-            jackpot: updatedJackpot,
-            win: isWin ? (user.win ?? 0) + 1 : (user.win ?? 0),
-            lose_count: isWin ? (user.lose_count ?? 0) : (user.lose_count ?? 0) + 1
+            coin: formatPoint(Number(user.coin ?? 0) + finalReward),
+            jackpot: Number(updatedJackpot ?? 0),
+            win: isWin ? Number(user.win ?? 0) + 1 : Number(user.win ?? 0),
+            lose_count: isWin ? Number(user.lose_count ?? 0) : Number(user.lose_count ?? 0) + 1
         };
 
-        setUser(updatedUser);
-        saveUserData(updatedUser);
-        saveGameLog({
+        const saved = await saveUserData(updatedUser);
+
+        if (!saved) {
+            return;
+        }
+
+        await saveGameLog({
             handNameValue: lastHandName,
             baseRewardValue: baseReward,
             jackpotFeeValue: fee,
@@ -1976,7 +2013,7 @@ if (betAmount > Number(user.coin ?? 0)) {
         startMiniGame();
     };
 
-    const finishAfterFail = () => {
+    const finishAfterFail = async () => {
         const isJackpotHand = handPower[lastHandName] >= handPower["풀하우스"];
 
         // 미니게임 실패 시 기본 배당은 0P.
@@ -1993,16 +2030,19 @@ if (betAmount > Number(user.coin ?? 0)) {
 
         const updatedUser = {
             ...user,
-            coin: formatPoint(user.coin + finalReward),
-            jackpot: jackpot,
-            win: isWin ? (user.win ?? 0) + 1 : (user.win ?? 0),
-            lose_count: isWin ? (user.lose_count ?? 0) : (user.lose_count ?? 0) + 1
+            coin: formatPoint(Number(user.coin ?? 0) + finalReward),
+            jackpot: Number(jackpot ?? 0),
+            win: isWin ? Number(user.win ?? 0) + 1 : Number(user.win ?? 0),
+            lose_count: isWin ? Number(user.lose_count ?? 0) : Number(user.lose_count ?? 0) + 1
         };
 
-        setUser(updatedUser);
-        saveUserData(updatedUser);
+        const saved = await saveUserData(updatedUser);
 
-        saveGameLog({
+        if (!saved) {
+            return;
+        }
+
+        await saveGameLog({
             handNameValue: lastHandName,
             baseRewardValue: baseReward,
             jackpotFeeValue: 0,
