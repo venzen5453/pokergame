@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo, useCallback } from "react";
 import { API_BASE_URL } from "../api";
 import MissionModal from "./MissionModal";
 
@@ -195,9 +195,30 @@ function evaluateHand(hand) {
     return bestHandName;
 }
 
-function drawMiniGameCard() {
-    const miniDeck = shuffleDeck(createDeck(false));
-    return miniDeck[0];
+function drawRandomNormalCard() {
+    const suit = suits[Math.floor(Math.random() * suits.length)];
+    const rank = ranks[Math.floor(Math.random() * ranks.length)];
+
+    return {
+        suit,
+        rank,
+        value: rankValue[rank],
+        isJoker: false
+    };
+}
+
+function drawMiniGamePair() {
+    const leftCard = drawRandomNormalCard();
+    let rightCard = drawRandomNormalCard();
+
+    while (rightCard.value === leftCard.value) {
+        rightCard = drawRandomNormalCard();
+    }
+
+    return {
+        leftCard,
+        rightCard
+    };
 }
 
 function formatPoint(value) {
@@ -686,6 +707,20 @@ function GameRuleModal({ isOpen, onClose }) {
 const GAME_SAVE_VERSION = 1;
 const MIN_BET = 100;
 
+const CARD_INDEXES = [0, 1, 2, 3, 4];
+
+// 체감 속도 최적화용 애니메이션 시간
+const FAST_DEAL_INTERVAL = 90;
+const FAST_FLIP_START = 560;
+const FAST_FLIP_INTERVAL = 80;
+const FAST_DRAW_READY_TIME = 1150;
+
+const FAST_EXCHANGE_OUT_BASE = 280;
+const FAST_EXCHANGE_OUT_INTERVAL = 70;
+const FAST_EXCHANGE_REVEAL_START = 250;
+const FAST_EXCHANGE_REVEAL_INTERVAL = 80;
+const FAST_EXCHANGE_FINISH_DELAY = 280;
+
 function getGameSaveKey(userId) {
     return `pokerGameState:${userId}`;
 }
@@ -739,7 +774,26 @@ function clearSavedGameState(userId) {
 
 function Game({ user, setUser, setPage }) {
 
-    const savedGameState = loadSavedGameState(user?.id)
+    const savedGameState = useMemo(() => loadSavedGameState(user?.id), [user?.id]);
+
+    const timersRef = useRef([]);
+
+    const addTimer = useCallback((callback, delay) => {
+        const timerId = setTimeout(callback, delay);
+        timersRef.current.push(timerId);
+        return timerId;
+    }, []);
+
+    const clearAllTimers = useCallback(() => {
+        timersRef.current.forEach(timerId => clearTimeout(timerId));
+        timersRef.current = [];
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            clearAllTimers();
+        };
+    }, [clearAllTimers]);
 
     const getPipPositions = (rank) => {
         const layouts = {
@@ -1220,63 +1274,68 @@ function Game({ user, setUser, setPage }) {
 
     useEffect(() => {
         localStorage.setItem("pokerSoundEnabled", String(soundEnabled));
-    }, [soundEnabled]);
-
-    useEffect(() => {
         localStorage.setItem("pokerSoundVolume", String(soundVolume));
-    }, [soundVolume]);
-
-    useEffect(() => {
         localStorage.setItem("pokerUiTheme", uiTheme);
-    }, [uiTheme]);
-
-    useEffect(() => {
         localStorage.setItem("pokerCardDesign", cardDesign);
-    }, [cardDesign]);
+    }, [soundEnabled, soundVolume, uiTheme, cardDesign]);
 
     useEffect(() => {
         if (!user?.id) return;
 
-        // ready 상태면 진행 중인 게임이 없는 상태라 저장 삭제
         if (phase === "ready") {
             clearSavedGameState(user.id);
             return;
         }
 
-        const gameState = {
-            version: GAME_SAVE_VERSION,
-            savedAt: Date.now(),
+        // 애니메이션 중에는 저장하지 않음: localStorage JSON 저장이 잦으면 게임이 버벅임
+        const skipSavePhases = ["dealing", "exchanging", "miniRevealing"];
 
-            deck,
-            hand,
-            heldCards,
-            dealtCount,
-            revealedCards,
-            phase,
-            exchangingCards,
-            incomingCards,
-            winningCards,
+        if (skipSavePhases.includes(phase)) {
+            return;
+        }
 
-            result,
-            bet,
-            jackpot,
-            baseReward,
-            currentReward,
-            lastHandName,
-            resultDetail,
-            jackpotBonus,
-            miniRewardOrigin,
-            miniWinStreak,
+        const timerId = setTimeout(() => {
+            const gameState = {
+                version: GAME_SAVE_VERSION,
+                savedAt: Date.now(),
 
-            miniLeftCard,
-            miniRightCard,
-            miniMessage,
-            usedMiniGame,
-            miniLeftRevealed,
-            miniSelectedGuess
-        };
+                deck,
+                hand,
+                heldCards,
+                dealtCount,
+                revealedCards,
+                phase,
+                exchangingCards: [],
+                incomingCards: [],
+                winningCards,
 
-        localStorage.setItem(getGameSaveKey(user.id), JSON.stringify(gameState));
+                result,
+                bet,
+                jackpot,
+                baseReward,
+                currentReward,
+                lastHandName,
+                resultDetail,
+                jackpotBonus,
+                miniRewardOrigin,
+                miniWinStreak,
+
+                miniLeftCard,
+                miniRightCard,
+                miniMessage,
+                usedMiniGame,
+                miniLeftRevealed,
+                miniSelectedGuess
+            };
+
+            try {
+                localStorage.setItem(getGameSaveKey(user.id), JSON.stringify(gameState));
+            } catch (error) {
+                console.error("게임 상태 저장 실패:", error);
+            }
+        }, 250);
+
+        return () => clearTimeout(timerId);
     }, [
         user?.id,
         deck,
@@ -1285,8 +1344,6 @@ function Game({ user, setUser, setPage }) {
         dealtCount,
         revealedCards,
         phase,
-        exchangingCards,
-        incomingCards,
         winningCards,
         result,
         bet,
@@ -1465,6 +1522,46 @@ function Game({ user, setUser, setPage }) {
         return () => clearTimeout(timer);
     }, [phase, resultDetail, user?.id]);
 
+    const roundInfo = useMemo(() => {
+        const totalGamesValue = getTotalGames(user);
+        const roundNumber = totalGamesValue + 1;
+        const jokerRule = getJokerRule(roundNumber);
+        const jokerRate = getDisplayJokerRate(roundNumber);
+
+        const isBoost = jokerRule === "boost";
+        const isGuaranteed = jokerRule === "guaranteed";
+
+        return {
+            totalGames: totalGamesValue,
+            currentRoundNumber: roundNumber,
+            currentJokerRate: jokerRate,
+            currentJokerRule: jokerRule,
+            isJokerBoostRound: isBoost,
+            isJokerGuaranteedRound: isGuaranteed,
+            jokerRoundTitle: isGuaranteed
+                ? "JOKER FEVER ROUND"
+                : isBoost
+                    ? "JOKER CHANCE ROUND"
+                    : "",
+            jokerRoundMessage: isGuaranteed
+                ? `${roundNumber}판! 이번 판은 조커 확정 등장입니다.`
+                : isBoost
+                    ? `${roundNumber}판! 이번 판은 조커 등장 확률이 45%입니다.`
+                    : ""
+        };
+    }, [user?.win, user?.lose_count]);
+
+    const {
+        totalGames,
+        currentRoundNumber,
+        currentJokerRate,
+        currentJokerRule,
+        isJokerBoostRound,
+        isJokerGuaranteedRound,
+        jokerRoundTitle,
+        jokerRoundMessage
+    } = roundInfo;
+
     if (!user) {
         return (
             <div className="auth-container">
@@ -1474,64 +1571,30 @@ function Game({ user, setUser, setPage }) {
         );
     }
 
-    const totalGames = getTotalGames(user);
-    const currentRoundNumber = getCurrentRoundNumber(user);
-    const currentJokerRate = getDisplayJokerRate(currentRoundNumber);
-    const currentJokerRule = getJokerRule(currentRoundNumber);
-
-    const isJokerBoostRound = currentJokerRule === "boost";
-    const isJokerGuaranteedRound = currentJokerRule === "guaranteed";
-
-    const jokerRoundTitle = isJokerGuaranteedRound
-        ? "JOKER FEVER ROUND"
-        : isJokerBoostRound
-            ? "JOKER CHANCE ROUND"
-            : "";
-
-    const jokerRoundMessage = isJokerGuaranteedRound
-        ? `${currentRoundNumber}판! 이번 판은 조커 확정 등장입니다.`
-        : isJokerBoostRound
-            ? `${currentRoundNumber}판! 이번 판은 조커 등장 확률이 45%입니다.`
-            : "";
-
     const startGame = async () => {
+        if (phase !== "ready" && phase !== "result") return;
 
-        playGameSound("deal");
-
-        const betAmount = Number(bet);
-
-if (!user) {
-    setResult("로그인이 필요합니다.");
-    return;
-}
-
-if (!betAmount || betAmount < MIN_BET) {
-    setBet(MIN_BET);
-    setResult(`배팅 금액은 ${MIN_BET}포인트 이상 입력해주세요.`);
-    return;
-}
-
-if (betAmount > Number(user.coin ?? 0)) {
-    setBet(Number(user.coin ?? 0));
-    setResult("보유 코인보다 큰 금액은 배팅할 수 없습니다.");
-    return;
-}
-
-        if (phase !== "ready" && phase !== "result") {
+        if (!user) {
+            setResult("로그인이 필요합니다.");
             return;
         }
 
         const numericBet = Number(bet);
 
         if (!numericBet || numericBet < MIN_BET) {
-            setResult(`베팅 금액은 ${MIN_BET}포인트 이상 입력해주세요.`);
+            setBet(MIN_BET);
+            setResult(`배팅 금액은 ${MIN_BET}포인트 이상 입력해주세요.`);
             return;
         }
 
-        if (Number(user.coin ?? 0) < numericBet) {
-            setResult("코인이 부족합니다.");
+        if (numericBet > Number(user.coin ?? 0)) {
+            setBet(Number(user.coin ?? 0));
+            setResult("보유 코인보다 큰 금액은 배팅할 수 없습니다.");
             return;
         }
+
+        clearAllTimers();
+        playGameSound("deal");
 
         const roundNumber = getCurrentRoundNumber(user);
         const jokerRule = getJokerRule(roundNumber);
@@ -1548,9 +1611,9 @@ if (betAmount > Number(user.coin ?? 0)) {
                 rate: `${(jokerRate * 100).toFixed(0)}%`
             });
 
-            setTimeout(() => {
+            addTimer(() => {
                 setJokerOverlay(null);
-            }, 1800);
+            }, 1200);
         }
 
         let shuffledDeck;
@@ -1559,14 +1622,11 @@ if (betAmount > Number(user.coin ?? 0)) {
         let shouldShowJoker = false;
 
         if (jokerRule === "normal") {
-            // 일반 판: 기존 방식 그대로, 조커 포함 53장 덱
             shuffledDeck = shuffleDeck(createDeck(true));
             firstHand = shuffledDeck.slice(0, 5);
             remainingDeck = shuffledDeck.slice(5);
-
             shouldShowJoker = firstHand.some(card => card.isJoker);
         } else {
-            // 10판/20판/30판 특수 판: 확률을 직접 제어하기 위해 조커 없는 덱 사용
             shuffledDeck = shuffleDeck(createDeck(false));
             firstHand = shuffledDeck.slice(0, 5);
             remainingDeck = shuffledDeck.slice(5);
@@ -1583,16 +1643,12 @@ if (betAmount > Number(user.coin ?? 0)) {
             }
         }
 
-        console.log(
-            `이번 판: ${roundNumber}판 / 규칙: ${jokerRule} / 조커 확률: ${(jokerRate * 100).toFixed(1)}% / 조커 등장: ${shouldShowJoker}`
-        );
-
         const jokerIndexInHand = firstHand.findIndex(card => card.isJoker);
 
         if (jokerIndexInHand !== -1) {
-            setTimeout(() => {
+            addTimer(() => {
                 playGameSound("joker");
-            }, 1100 + jokerIndexInHand * 170 + 80);
+            }, FAST_FLIP_START + jokerIndexInHand * FAST_FLIP_INTERVAL + 120);
         }
 
         const updatedUser = {
@@ -1620,7 +1676,6 @@ if (betAmount > Number(user.coin ?? 0)) {
         resetRewardProcessing();
 
         setBaseReward(0);
-
         setCurrentReward(0);
         setLastHandName("");
         setResultDetail(null);
@@ -1631,31 +1686,38 @@ if (betAmount > Number(user.coin ?? 0)) {
         setMiniRightCard(null);
         setMiniMessage("");
         setUsedMiniGame(false);
+        setMiniLeftRevealed(false);
+        setMiniSelectedGuess("");
         setPhase("dealing");
 
-// 카드가 왼쪽부터 한 장씩 뒷면으로 배분됨
         for (let i = 0; i < 5; i++) {
-            setTimeout(() => {
-                playGameSound("deal");
+            addTimer(() => {
+                if (i === 0 || i === 4) {
+                    playGameSound("deal");
+                }
+
                 setDealtCount(i + 1);
-            }, i * 180);
+            }, i * FAST_DEAL_INTERVAL);
         }
 
-
-// 배분이 끝난 뒤 왼쪽부터 한 장씩 앞면으로 뒤집힘
         for (let i = 0; i < 5; i++) {
-            setTimeout(() => {
-                playGameSound("flip");
-                setRevealedCards((prev) => [...prev, i]);
-            }, 1100 + i * 170);
+            addTimer(() => {
+                if (i === 0 || i === 4) {
+                    playGameSound("flip");
+                }
+
+                setRevealedCards(prev => {
+                    if (prev.includes(i)) return prev;
+                    return [...prev, i];
+                });
+            }, FAST_FLIP_START + i * FAST_FLIP_INTERVAL);
         }
 
-// 모든 카드가 공개된 후 HOLD 선택 가능
-        setTimeout(() => {
+        addTimer(() => {
             const autoHoldIndexes = getAutoHoldIndexes(firstHand);
             setHeldCards(autoHoldIndexes);
             setPhase("draw");
-        }, 2100);
+        }, FAST_DRAW_READY_TIME);
     };
 
     const toggleHoldCard = (index) => {
@@ -1805,53 +1867,65 @@ if (betAmount > Number(user.coin ?? 0)) {
     const exchangeCards = () => {
         if (phase !== "draw") return;
 
-        const exchangeIndexes = [0, 1, 2, 3, 4].filter(index => !heldCards.includes(index));
+        clearAllTimers();
 
-        if (exchangeIndexes.length > 0) {
-            playGameSound("exchange");
+        const heldSet = new Set(heldCards);
+        const exchangeIndexes = CARD_INDEXES.filter(index => !heldSet.has(index));
+
+        if (exchangeIndexes.length === 0) {
+            finishExchangeResult(hand, deck);
+            return;
         }
 
-        let newDeck = [...deck];
-        let newHand = [...hand];
+        playGameSound("exchange");
+
+        const newDeck = [...deck];
+        const newHand = [...hand];
 
         exchangeIndexes.forEach(index => {
-            newHand[index] = newDeck[0];
-            newDeck = newDeck.slice(1);
+            newHand[index] = newDeck.shift();
         });
 
         setPhase("exchanging");
         setExchangingCards(exchangeIndexes);
         setResult("카드를 교환하는 중입니다...");
 
-        const outAnimationTime = 650 + exchangeIndexes.length * 120;
+        const outAnimationTime =
+            FAST_EXCHANGE_OUT_BASE + exchangeIndexes.length * FAST_EXCHANGE_OUT_INTERVAL;
 
-        setTimeout(() => {
+        addTimer(() => {
             setHand(newHand);
             setDeck(newDeck);
             setExchangingCards([]);
             setIncomingCards(exchangeIndexes);
 
+            const exchangeSet = new Set(exchangeIndexes);
+
             setRevealedCards(prev =>
-                prev.filter(index => !exchangeIndexes.includes(index))
+                prev.filter(index => !exchangeSet.has(index))
             );
 
             exchangeIndexes.forEach((index, order) => {
-                setTimeout(() => {
-                    playGameSound("flip");
+                addTimer(() => {
+                    if (order === 0 || order === exchangeIndexes.length - 1) {
+                        playGameSound("flip");
+                    }
 
                     setRevealedCards(prev => {
                         if (prev.includes(index)) return prev;
                         return [...prev, index];
                     });
-                }, 500 + order * 180);
+                }, FAST_EXCHANGE_REVEAL_START + order * FAST_EXCHANGE_REVEAL_INTERVAL);
             });
 
-            const revealFinishTime = 500 + exchangeIndexes.length * 180 + 450;
+            const revealFinishTime =
+                FAST_EXCHANGE_REVEAL_START +
+                exchangeIndexes.length * FAST_EXCHANGE_REVEAL_INTERVAL +
+                FAST_EXCHANGE_FINISH_DELAY;
 
-            setTimeout(() => {
+            addTimer(() => {
                 finishExchangeResult(newHand, newDeck);
             }, revealFinishTime);
-
         }, outAnimationTime);
     };
 
@@ -1965,12 +2039,7 @@ if (betAmount > Number(user.coin ?? 0)) {
 
         playGameSound("click");
 
-        const leftCard = drawMiniGameCard();
-        let rightCard = drawMiniGameCard();
-
-        while (rightCard.value === leftCard.value) {
-            rightCard = drawMiniGameCard();
-        }
+        const { leftCard, rightCard } = drawMiniGamePair();
 
         setMiniLeftCard(leftCard);
         setMiniRightCard(rightCard);
@@ -1992,7 +2061,7 @@ if (betAmount > Number(user.coin ?? 0)) {
         setMiniMessage("왼쪽 카드를 공개합니다...");
         setPhase("miniRevealing");
 
-        setTimeout(() => {
+        addTimer(() => {
             const isLeftHigher = miniLeftCard.value > miniRightCard.value;
 
             const isCorrect =
@@ -2632,35 +2701,35 @@ if (betAmount > Number(user.coin ?? 0)) {
                         <div className="bet-input-box">
                             <label>배팅 포인트</label>
                             <input
-    type="number"
-    value={bet}
-    onChange={(e) => {
-        const value = e.target.value;
+                                type="number"
+                                value={bet}
+                                onChange={(e) => {
+                                    const value = e.target.value;
 
-        // 입력 중에는 빈칸 허용
-        if (value === "") {
-            setBet("");
-            return;
-        }
+                                    // 입력 중에는 빈칸 허용
+                                    if (value === "") {
+                                        setBet("");
+                                        return;
+                                    }
 
-        setBet(Number(value));
-    }}
-    onBlur={() => {
-        const numericBet = Number(bet);
+                                    setBet(Number(value));
+                                }}
+                                onBlur={() => {
+                                    const numericBet = Number(bet);
 
-        if (!numericBet || numericBet < MIN_BET) {
-            setBet(MIN_BET);
-            return;
-        }
+                                    if (!numericBet || numericBet < MIN_BET) {
+                                        setBet(MIN_BET);
+                                        return;
+                                    }
 
-        if (numericBet > Number(user.coin ?? 0)) {
-            setBet(Number(user.coin ?? 0));
-        }
-    }}
-    min={MIN_BET}
-    max={Number(user.coin ?? 0)}
-    disabled={phase !== "ready" && phase !== "result"}
-/>
+                                    if (numericBet > Number(user.coin ?? 0)) {
+                                        setBet(Number(user.coin ?? 0));
+                                    }
+                                }}
+                                min={MIN_BET}
+                                max={Number(user.coin ?? 0)}
+                                disabled={phase !== "ready" && phase !== "result"}
+                            />
                         </div>
 
                         <p className="bet-help-text">
