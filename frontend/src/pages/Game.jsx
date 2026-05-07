@@ -325,68 +325,93 @@ const primePokerAudioContext = () => {
         if (audioCtx.state === "suspended") {
             void audioCtx.resume();
         }
+
+        warmUpCardSoundFiles();
     } catch (error) {
         console.error("효과음 준비 실패:", error);
     }
 };
 
-const playPaperCardSound = (audioCtx, baseTime, masterVolume, options = {}) => {
-    const {
-        duration = 0.09,
-        volume = 0.2,
-        highpass = 500,
-        lowpass = 4200,
-        attack = 0.006,
-        decayPower = 1.7
-    } = options;
+const cardSoundFiles = {
+    deal: "/sounds/card-deal.mp3",
+    flip: "/sounds/card-flip.mp3",
+    exchange: "/sounds/card-slide.mp3",
+    exchangeFlip: "/sounds/card-deal.mp3",
+    exchangeLastFlip: "/sounds/card-deal.mp3"
+};
 
-    const bufferSize = Math.max(1, Math.floor(audioCtx.sampleRate * duration));
-    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const data = buffer.getChannelData(0);
+const cardAudioPool = {};
 
-    for (let i = 0; i < bufferSize; i++) {
-        const progress = i / bufferSize;
-        const envelope = Math.pow(1 - progress, decayPower);
-
-        // 종이/카드가 스치는 느낌의 짧은 노이즈
-        data[i] = (Math.random() * 2 - 1) * envelope;
+const getCardAudio = (src) => {
+    if (!cardAudioPool[src]) {
+        cardAudioPool[src] = Array.from({ length: 8 }, () => {
+            const audio = new Audio(src);
+            audio.preload = "auto";
+            return audio;
+        });
     }
 
-    const noise = audioCtx.createBufferSource();
-    const highpassFilter = audioCtx.createBiquadFilter();
-    const lowpassFilter = audioCtx.createBiquadFilter();
-    const gainNode = audioCtx.createGain();
+    const pool = cardAudioPool[src];
+    const availableAudio = pool.find(audio => audio.paused || audio.ended);
 
-    noise.buffer = buffer;
+    if (availableAudio) {
+        return availableAudio;
+    }
 
-    highpassFilter.type = "highpass";
-    highpassFilter.frequency.setValueAtTime(highpass, baseTime);
+    const clonedAudio = pool[0].cloneNode(true);
+    pool.push(clonedAudio);
+    return clonedAudio;
+};
 
-    lowpassFilter.type = "lowpass";
-    lowpassFilter.frequency.setValueAtTime(lowpass, baseTime);
+const warmUpCardSoundFiles = () => {
+    Object.values(cardSoundFiles).forEach((src) => {
+        const audio = getCardAudio(src);
+        audio.load();
+    });
+};
 
-    gainNode.gain.setValueAtTime(0.001, baseTime);
-    gainNode.gain.exponentialRampToValueAtTime(
-        Math.max(0.001, volume * masterVolume),
-        baseTime + attack
-    );
-    gainNode.gain.exponentialRampToValueAtTime(
-        0.001,
-        baseTime + duration
-    );
+const playCardSoundFile = (type, masterVolume = 0.7, startDelayMs = 0) => {
+    const src = cardSoundFiles[type];
 
-    noise.connect(highpassFilter);
-    highpassFilter.connect(lowpassFilter);
-    lowpassFilter.connect(gainNode);
-    gainNode.connect(audioCtx.destination);
+    if (!src) {
+        return false;
+    }
 
-    noise.start(baseTime);
-    noise.stop(baseTime + duration + 0.03);
+    const play = () => {
+        const audio = getCardAudio(src);
+
+        audio.currentTime = 0;
+
+        if (type === "exchangeLastFlip") {
+            audio.volume = Math.min(1, masterVolume * 0.95);
+        } else if (type === "exchange") {
+            audio.volume = Math.min(1, masterVolume * 0.55);
+        } else {
+            audio.volume = Math.min(1, masterVolume * 0.75);
+        }
+
+        audio.play().catch(error => {
+            console.error("카드 효과음 재생 실패:", error);
+        });
+    };
+
+    if (startDelayMs > 0) {
+        setTimeout(play, startDelayMs);
+    } else {
+        play();
+    }
+
+    return true;
 };
 
 const playSound = (type, masterVolume = 0.7, startDelayMs = 0) => {
     try {
         if (masterVolume <= 0) return;
+
+        // 카드 관련 소리는 실제 mp3 파일로 먼저 재생
+        if (playCardSoundFile(type, masterVolume, startDelayMs)) {
+            return;
+        }
 
         const audioCtx = getPokerAudioContext();
 
@@ -396,53 +421,6 @@ const playSound = (type, masterVolume = 0.7, startDelayMs = 0) => {
 
         const baseTime = audioCtx.currentTime + Math.max(0, startDelayMs) / 1000;
 
-// 카드 관련 소리는 전자음이 아니라 종이/카드 마찰음으로 처리
-        const paperCardSounds = {
-            deal: {
-                duration: 0.105,
-                volume: 0.22,
-                highpass: 650,
-                lowpass: 3600,
-                decayPower: 1.6
-            },
-
-            flip: {
-                duration: 0.085,
-                volume: 0.18,
-                highpass: 850,
-                lowpass: 4800,
-                decayPower: 1.4
-            },
-
-            exchange: {
-                duration: 0.13,
-                volume: 0.16,
-                highpass: 380,
-                lowpass: 3200,
-                decayPower: 1.9
-            },
-
-            exchangeFlip: {
-                duration: 0.105,
-                volume: 0.22,
-                highpass: 650,
-                lowpass: 3600,
-                decayPower: 1.6
-            },
-
-            exchangeLastFlip: {
-                duration: 0.12,
-                volume: 0.28,
-                highpass: 650,
-                lowpass: 3800,
-                decayPower: 1.5
-            }
-        };
-
-        if (paperCardSounds[type]) {
-            playPaperCardSound(audioCtx, baseTime, masterVolume, paperCardSounds[type]);
-            return;
-        }
 
         const soundPatterns = {
             click: [
