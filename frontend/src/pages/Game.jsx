@@ -540,6 +540,15 @@ function getAutoHoldIndexes(hand) {
         return [];
     }
 
+    const winningIndexes = getWinningCardIndexes(hand, handName);
+
+    if (winningIndexes.length > 0) {
+        return winningIndexes;
+    }
+
+    return [];
+}
+
     const jokerIndex = hand.findIndex(card => card.isJoker);
     const hasJoker = jokerIndex !== -1;
 
@@ -576,7 +585,13 @@ function getAutoHoldIndexes(hand) {
         const fourCardGroup = sameRankGroups.find(group => group.length === 4);
 
         if (fourCardGroup) {
-            return hasJoker ? [...fourCardGroup, jokerIndex] : fourCardGroup;
+            return fourCardGroup;
+        }
+
+        const threeCardGroup = sameRankGroups.find(group => group.length === 3);
+
+        if (threeCardGroup && hasJoker) {
+            return [...threeCardGroup, jokerIndex];
         }
     }
 
