@@ -224,6 +224,18 @@ function drawMiniGamePair() {
 function formatPoint(value) {
     return Math.round(Number(value) * 10) / 10;
 }
+
+function formatPointText(value) {
+    const num = Number(value ?? 0);
+
+    if (!Number.isFinite(num)) {
+        return "0";
+    }
+
+    return num.toLocaleString("ko-KR", {
+        maximumFractionDigits: 1
+    });
+}
 function serializeFinalCards(cards) {
     if (!Array.isArray(cards)) return [];
 
@@ -2554,23 +2566,23 @@ function Game({ user, setUser, setPage }) {
                     <div className="game-popup-body">
                         <div className={`popup-result-card ${isWin ? "win" : "lose"}`}>
                             <span>최종 획득</span>
-                            <strong>{formatPoint(resultDetail.finalReward)}P</strong>
+                            <strong>{formatPointText(resultDetail.finalReward)}P</strong>
                         </div>
 
                         <div className="popup-result-grid">
                             <div>
                                 <span>배팅</span>
-                                <strong>{formatPoint(resultDetail.bet)}P</strong>
+                                <strong>{formatPointText(resultDetail.bet)}P</strong>
                             </div>
 
                             <div>
                                 <span>기본 배당</span>
-                                <strong>{formatPoint(resultDetail.baseReward)}P</strong>
+                                <strong>{formatPointText(resultDetail.baseReward)}P</strong>
                             </div>
 
                             <div>
                                 <span>잭팟 적립</span>
-                                <strong>{formatPoint(resultDetail.jackpotFee)}P</strong>
+                                <strong>{formatPointText(resultDetail.jackpotFee)}P</strong>
                             </div>
 
                             <div>
@@ -2630,12 +2642,12 @@ function Game({ user, setUser, setPage }) {
                 <div className="casino-status-area">
                     <div className="casino-status-chip">
                         <span>COIN</span>
-                        <strong>{formatPoint(user.coin)}P</strong>
+                        <strong>{formatPointText(user?.coin)}P</strong>
                     </div>
 
                     <div className="casino-status-chip jackpot">
                         <span>JACKPOT</span>
-                        <strong>{formatPoint(jackpot)}P</strong>
+                        <strong>{formatPointText(jackpot)}P</strong>
                     </div>
 
                     <div className="casino-status-chip">
@@ -2882,7 +2894,7 @@ function Game({ user, setUser, setPage }) {
                         </div>
 
                         <p className="bet-help-text">
-                            최소 배팅: <strong>{MIN_BET}P</strong> / 보유 코인: <strong>{formatPoint(user.coin)}P</strong>
+                            최소 배팅: <strong>{formatPointText(MIN_BET)}P</strong> / 보유 코인: <strong>{formatPointText(user.coin)}P</strong>
                         </p>
 
                         {phase !== "ready" && phase !== "result" && (
@@ -2907,7 +2919,7 @@ function Game({ user, setUser, setPage }) {
 
                         <div className="round-info-row">
                             <span>잭팟</span>
-                            <strong>{formatPoint(jackpot)}P</strong>
+                            <strong>{formatPointText(jackpot)}P</strong>
                         </div>
 
                         {isJokerBoostRound && (

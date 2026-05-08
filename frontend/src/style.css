@@ -6068,3 +6068,68 @@ button:hover {
         grid-template-columns: minmax(0, 1fr) 52px;
     }
 }
+
+/* =========================
+   Money Overflow Fix
+   큰 금액이 박스 밖으로 나가지 않게 처리
+========================= */
+
+/* 상단 COIN / JACKPOT / ROUND / JOKER 영역 */
+.casino-status-area {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    min-width: 0 !important;
+}
+
+.casino-status-chip {
+    min-width: 0 !important;
+    overflow: hidden !important;
+}
+
+.casino-status-chip strong {
+    max-width: 100% !important;
+    display: block !important;
+    font-size: clamp(11px, 1.15vw, 17px) !important;
+    line-height: 1.15 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+}
+
+/* JACKPOT 숫자도 박스 안에서 줄바꿈 허용 */
+.casino-status-chip.jackpot strong {
+    color: gold !important;
+}
+
+/* 오른쪽 사이드 패널 금액 */
+.side-card p {
+    min-width: 0 !important;
+    gap: 8px !important;
+}
+
+.side-card p strong,
+.side-card p span:last-child {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    text-align: right !important;
+    overflow-wrap: anywhere !important;
+    word-break: break-word !important;
+    line-height: 1.25 !important;
+}
+
+/* PC에서 헤더 전체가 너무 빡빡할 때 */
+@media (min-width: 1001px) {
+    .casino-topbar {
+        grid-template-columns: 180px minmax(0, 1fr) auto !important;
+    }
+}
+
+/* 모바일은 기존처럼 2줄 배치 유지 */
+@media (max-width: 768px) {
+    .casino-status-area {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    }
+
+    .casino-status-chip strong {
+        font-size: 15px !important;
+    }
+}
